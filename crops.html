@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>锄禾问天</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--清理缓存  -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="css/swiper-bundle.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 顶部标题 */
+        .top_title {
+            height: 44px;
+            text-align: center;
+            line-height: 44px;
+            position: fixed;
+            top: 0px;
+            z-index: 123;
+            background: #fff;
+            width: 100%;
+            /* display: none; */
+        }
+
+        .top_title img {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 12px;
+            top: 10px;
+            transform: rotateY(180deg);
+        }
+
+        .top_title span {
+            display: inline-block;
+            width: 100%;
+            height: 22px;
+            font-family: PingFangSC-Medium;
+            font-size: 16px;
+            color: #333333;
+            letter-spacing: 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* 顶部标题 */
+        .top_title_two {
+            height: 44px;
+            text-align: center;
+            line-height: 44px;
+            position: fixed;
+            top: 0px;
+            z-index: 123;
+            background: #fff;
+            width: 100%;
+            display: none;
+        }
+
+        .top_title_two img {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 12px;
+            top: 10px;
+            transform: rotateY(180deg);
+        }
+
+        .top_title_two span {
+            display: inline-block;
+            width: 100%;
+            height: 22px;
+            font-family: PingFangSC-Medium;
+            font-size: 16px;
+            color: #333333;
+            letter-spacing: 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* 农产品 */
+        .content {
+            height: calc(100% + 44px) !important;
+            background-color: #EFEFF4;
+            padding: 12px;
+            margin-top: 44px;
+            overflow: auto;
+        }
+
+        .content_span {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 22px;
+            color: #FFF;
+        }
+
+        .content_spanTwo {
+            position: absolute;
+            top: 35px;
+            left: 10px;
+            color: #FFF;
+        }
+
+        .scenicArea_img,
+        .scenicArea_img2,
+        .scenicArea_img3,
+        .scenicArea_img4 {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            margin-top: 5px;
+        }
+
+        .scenicArea_img img,
+        .scenicArea_img2 img,
+        .scenicArea_img3 img,
+        .scenicArea_img4 img {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+        }
+
+        /* 农产品介绍 */
+        .introduce {
+            /* z-index: 100; */
+            height: calc(100% + 44px) !important;
+            background-color: #EFEFF4;
+            margin-top: 44px;
+            overflow: auto;
+            position: absolute;
+            top: 0;
+            background-color: #EFEFF4;
+            display: none;
+        }
+
+        /* 轮播图 */
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        .box img,
+        .box2 img,
+        .box3 img,
+        .box4 img {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .address {
+            width: 100%;
+            background-color: #FFF;
+        }
+
+        .address img {
+            position: relative;
+            top: 9px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+        }
+
+        .address_text {
+            height: 40px;
+            display: inline-block;
+            line-height: 40px;
+            margin-left: 5px;
+        }
+
+
+        /* 文本内容 */
+        .text_contet {
+            /* border: 1px red solid; */
+            background-color: #fff;
+            margin-top: 15px;
+        }
+
+        .text_contet h4 {
+            width: 94%;
+            margin: 15px 0 0 15px;
+            padding-bottom: 5px;
+            display: inline-block;
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 1px rgb(128, 128, 128) dashed;
+        }
+
+        .text_contet .text {
+            padding: 15px;
+            display: inline-block;
+            font-size: 16px;
+            line-height: 35px;
+            color: rgb(128, 128, 128);
+        }
+
+        .swiper {
+            width: 100vw;
+            height: 300px;
+        }
+
+        .swiper-pagination-bullet {
+            background: var(--swiper-pagination-bullet-inactive-color, rgb(255, 255, 255));
+            opacity: var(--swiper-pagination-bullet-inactive-opacity, 0.8);
+
+        }
+
+        .swiper-pagination-bullet-active {
+            opacity: var(--swiper-pagination-bullet-opacity, 1);
+            background: var(--swiper-pagination-color, var(--swiper-theme-color));
+        }
+
+        /* 底部制作单位 */
+        .producerDiv {
+            width: 97%;
+            min-width: 320px;
+            max-width: 640px;
+            margin-top: 20px;
+            background: #ffffff;
+            padding: 5px;
+        }
+
+        .producerDiv p {
+            margin-bottom: 0;
+            margin-top: 0;
+            text-align: center;
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #666666;
+            letter-spacing: 0;
+            font-weight: 400;
+        }
+
+        .producerDiv .more {
+            margin-top: 2px;
+            text-align: center;
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #666666;
+            letter-spacing: 0;
+            font-weight: 400;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="height: 100%;">
+        <!-- 头部 -->
+        <div class="top_title">
+            <img src="./img/ic_rightarrows.png" alt="" srcset="" onclick="window.location.href = './prefecture.html'">
+            <span>美丽家园</span>
+        </div>
+        <!-- 农产品 -->
+        <div class="content">
+            <div class="scenicArea_img">
+                <span class="content_span">
+                    青州花卉
+                </span>
+                <span class="content_spanTwo">
+                    东方花都&nbsp;&nbsp;&nbsp;古城青州
+                </span>
+                <img src="./qinzhou_img/flowers_1.png">
+            </div>
+            <div class="scenicArea_img2">
+                <span class="content_span">
+                    青州蜜桃
+                </span>
+                <span class="content_spanTwo">
+                    伴过菊花伴雪花，蜜桃甜入世人家
+                </span>
+                <img src="./qinzhou_img/peach_1.jpg">
+            </div>
+            <div class="scenicArea_img3">
+                <span class="content_span">
+                    青州山楂
+                </span>
+                <span class="content_spanTwo">
+                    酸甜涎水动，开口万年长
+                </span>
+                <img src="./qinzhou_img/hawthorn_2.jpg">
+            </div>
+            <div class="scenicArea_img4">
+                <span class="content_span">
+                    青州银瓜
+                </span>
+                <span class="content_spanTwo">
+                    瓜中佳品
+                </span>
+                <img src="./qinzhou_img/slverMelon_1.jpg">
+            </div>
+        </div>
+        <!--制作单位  -->
+        <div class="producerDiv"  style="margin-top: 0;">
+            <p class="company">山东省气象服务中心制作</p>
+            <p class="more">更多信息下载锄禾问天APP</p>
+        </div>
+        <!--制作单位  end-->
+
+
+        <div class="top_title_two">
+            <img src="./img/ic_rightarrows.png" alt="" srcset="">
+            <span>作物介绍</span>
+        </div>
+        <!-- 农产品介绍 -->
+        <div class="introduce">
+            <!-- 花卉 -->
+            <div class="box" id="box">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="./qinzhou_img/flowers_1.png" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/flowers_2.png" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/flowers_3.png" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/flowers_4.png" alt=""></div>
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination"></div>
+
+                    <!-- 如果需要导航按钮 -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+
+                <div class="address">
+                    <img src="./qinzhou_img/address.png">
+                    <span class="address_text">
+                        青州市黄楼镇
+                    </span>
+                </div>
+
+                <!-- 文本内容 -->
+                <div class="text_contet">
+                    <h4>青州花卉</h4>
+                    <span class="text">
+                        &emsp;&emsp;青州花卉已有20多年的历史，已形成"一片(黄楼镇花卉片区)"、"四区(城区花卉种植区、益都街道花卉种植区、王坟镇花卉苗木区、云门山花卉种植区)"的种植格局。青州市黄楼镇是青州花卉的主产区，素有江北第一花镇之称。<br />
+                        &emsp;&emsp;目前，青州市花卉种植面积达到13.1万亩，花卉专业村136个，种植业户2092户、专业合作社300余家，年产值95亿元，年交易额110亿元，多肉植物、草花产销量占全国的50%以上，“青州花卉”品牌估值328亿元，名列农业品牌全省第一。
+                    </span>
+                </div>
+            </div>
+            <!-- 蜜桃 -->
+            <div class="box2" id="box2">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_1.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_2.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_3.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_4.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_5.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_6.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/peach_7.jpg" alt=""></div>
+
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination"></div>
+
+                    <!-- 如果需要导航按钮 -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+                <div class="address">
+                    <img src="./qinzhou_img/address.png">
+                    <span class="address_text">
+                        青州市境内西南部石灰岩低山丘陵区
+                    </span>
+                </div>
+
+                <!-- 文本内容 -->
+                <div class="text_contet">
+                    <h4>青州蜜桃</h4>
+                    <span class="text">
+                        &emsp;&emsp;伴过菊花伴雪花，蜜桃甜入世人家。青州蜜桃栽培历史悠久，据青州府志（明嘉靖四十四年）记载，“果之品，有文冠果、桃、杏、李、枣、柿、栗、梨、核桃、樱桃、络丝桃、秋桃、冬桃……”至今有450余年的历史。其果以色泽浓艳，肉质细嫩、清香脆甜、晚熟耐藏、汁多味美而备受喜爱。青州蜜桃历代列为贡品，建国后于1954年被国务院列为“特供果品”。青仲蜜、青霜蜜、冬雪蜜桃是青州蜜桃代表性品种。<br />
+                        &emsp;&emsp;目前，青州市栽植青州蜜桃9.85万亩，产量29.55万吨，产值12.28亿元，从业人员8600余人。先后注册“杨家窝山蜜桃”“尧王山蜜桃”“玲珑山蜜桃”“王坟蜜桃”“青玉白塔”“曹家沟冬雪蜜桃”“程家尧王绿野”“峪景风”“玉冻春”等9个企业商标品牌。
+                    </span>
+                </div>
+            </div>
+            <!-- 山楂 -->
+            <div class="box3" id="box3">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="./qinzhou_img/hawthorn_1.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/hawthorn_2.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/hawthorn_3.jpg" alt=""></div>
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination"></div>
+
+                    <!-- 如果需要导航按钮 -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+
+                <div class="address">
+                    <img src="./qinzhou_img/address.png">
+                    <span class="address_text">
+                        主要分布在王坟镇和王府街道
+                    </span>
+                </div>
+
+                <!-- 文本内容 -->
+                <div class="text_contet">
+                    <h4>青州山楂</h4>
+                    <span class="text">
+                        &emsp;&emsp;酸甜涎水动，开口万年长。青州敞口山楂在青州市栽培历史悠久，是山东省地方名、优特产，据明嘉靖四十四年(1565年)的"青州府志"中记载，栽培历史已有500余年。
+                        青州目前山楂种植面积3.7万亩，年产山楂鲜果5.7万吨。主要分布在王坟镇和王府街道。以传统“大金星”敞口山楂为主栽品种，单果重10—l2克，果实近圆稍扁，顶部具有五棱，果面鲜红或鲜枣红，披腊光，果实顶部有散生黄白色小果点。山楂果肉粉白至粉红，肉质紧密，味酸稍甜，品质极上，适宜鲜食和精深加工。
+                        <br />
+                        &emsp;&emsp;2013年青州敞口山楂成为国家地理标志保护产品。在2020年公布的中国农产品区域公用品牌价值评估中，青州山楂品牌价值2.05亿元。
+                    </span>
+                </div>
+            </div>
+            <!-- 银瓜 -->
+            <div class="box4" id="box4">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="./qinzhou_img/slverMelon_1.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/slverMelon_2.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/slverMelon_3.jpg" alt=""></div>
+                        <div class="swiper-slide"><img src="./qinzhou_img/slverMelon_4.jpg" alt=""></div>
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination"></div>
+
+                    <!-- 如果需要导航按钮 -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+                <div class="address">
+                    <img src="./qinzhou_img/address.png">
+                    <span class="address_text">
+                        原产于流经青州市的弥河两岸沙滩
+                    </span>
+                </div>
+
+                <!-- 文本内容 -->
+                <div class="text_contet">
+                    <h4>青州银瓜</h4>
+                    <span class="text">
+                        &emsp;&emsp;青州银瓜是青州市名优特产，有“瓜中佳品”的美称，原产于流经我市的弥河两岸沙滩，故称“弥河银瓜”，又名益都银瓜。据青州府志记载，明孝宗弘治年间，第一位衡王朱佑珲就藩青州，弥河银瓜被选为皇宫贡品，目前已有530余年。<br />
+                        &emsp;&emsp;新中国成立后，青州银瓜以表皮光洁、白中透黄、内质脆、香气浓郁、甘甜可口、品质优等特点被国务院列为特供农产品。取消特供后，青州银瓜以名优特产远销北京、上海、济南、青岛等大中城市，倍受消费者青睐。<br />
+                        &emsp;&emsp;2009年6月，“青州银瓜”商标被国家工商总局注册为农产品地理标志证明商标，成为潍坊市首个地理标志证明商标。2019年“青州银瓜”品牌价值为5.35亿元；青州银瓜已被评为山东省知名农产品区域公用品牌。
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="./js/jquery 1.9.min.js"></script>
+<script src="js/swiper-bundle.js"></script>
+
+<script>
+    var mySwiper = new Swiper('.swiper', {
+        direction: 'horizontal', // 垂直切换选项
+        loop: true, // 循环模式选项
+        setWrapperSize: true,
+        speed: 500,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false,
+        },
+        // 如果需要前进后退按钮
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        // 如果需要分页器
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    })
+    // 花卉
+    $(".scenicArea_img").click(function () {
+        $(".top_title").hide();
+        $(".introduce .box2").hide();
+        $(".introduce .box3").hide();
+        $(".introduce .box4").hide();
+        $("box3").hide();
+        $("box4").hide();
+        $(".content").hide();
+        $(".introduce").show();
+        $(".introduce .box").show();
+        $(".top_title_two").show();
+    })
+    $(".top_title_two img").click(function () {
+        $(".top_title_two").hide();
+        $(".introduce").hide();
+        $(".top_title").show();
+        $(".content").show();
+    })
+    // 蜜桃-----------------------------
+    $(".scenicArea_img2").click(function () {
+        $(".top_title").hide();
+        $(".introduce .box").hide();
+        $(".introduce .box3").hide();
+        $(".introduce .box4").hide();
+        $(".content").hide();
+        $(".introduce").show();
+        $(".introduce .box2").show();
+        $(".top_title_two").show();
+    })
+    $(".top_title_two img").click(function () {
+        $(".top_title_two").hide();
+        $(".introduce").hide();
+        $(".top_title").show();
+        $(".content").show();
+    })
+    // 山楂-----------------------
+    $(".scenicArea_img3").click(function () {
+        $(".top_title").hide();
+        $(".introduce .box").hide();
+        $(".introduce .box2").hide();
+        $(".introduce .box4").hide();
+        $(".content").hide();
+        $(".introduce").show();
+        $(".introduce .box3").show();
+        $(".top_title_two").show();
+    })
+    $(".top_title_two img").click(function () {
+        $(".top_title_two").hide();
+        $(".introduce").hide();
+        $(".top_title").show();
+        $(".content").show();
+    })
+    // 银瓜------------------------------
+    $(".scenicArea_img4").click(function () {
+        $(".top_title").hide();
+        $(".introduce .box").hide();
+        $(".introduce .box2").hide();
+        $(".introduce .box3").hide();
+        $(".content").hide();
+        $(".introduce").show();
+        $(".introduce .box4").show();
+        $(".top_title_two").show();
+    })
+    $(".top_title_two img").click(function () {
+        $(".top_title_two").hide();
+        $(".introduce").hide();
+        $(".top_title").show();
+        $(".content").show();
+    })
+</script>
+
+</html>

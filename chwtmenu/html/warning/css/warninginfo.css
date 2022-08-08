@@ -1,0 +1,172 @@
+/* reset */
+*{
+    box-sizing: border-box;
+}
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,menu{margin:0;padding:0;}
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{display:block;}
+table{border-collapse:collapse;border-spacing:0;}
+caption,th{text-align:left;font-weight:normal;}
+html,body,fieldset,img,iframe,abbr{border:0;}
+i,cite,em,var,address,dfn{font-style:normal;}
+[hidefocus],summary{outline:0;}
+li{list-style:none;}
+h1,h2,h3,h4,h5,h6,small{font-size:100%;}
+sup,sub{font-size:83%;}
+pre,code,kbd,samp{font-family:inherit;}
+q:before,q:after{content:none;}
+textarea{overflow:auto;resize:none;}
+label,summary{cursor:default;}
+a,button{cursor:pointer;}
+h1,h2,h3,h4,h5,h6,em,strong,b{font-weight:bold;}
+del,ins,u,s,a,a:hover{text-decoration:none;}
+body,textarea,input,button,select,keygen,legend{font-family: "";color:#333;outline:0;}
+body{background:#fff;}
+a,a:hover{color:#333;}
+.f-float-left{float: left;}
+.f-float-right{float: right;}
+
+
+/*----------gis---------------*/
+.m-loading-tip{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -10
+}
+
+.waitingTip {
+    z-index: 1002;
+    font-family: "Microsoft YaHei";
+    color: #000;
+    font-size: 15px;
+}
+
+.zdzLabel {
+    font-family: "Microsoft YaHei";
+    color:#000;
+    font-size: 14px;
+    text-shadow: 1px 0 0 #fff,-1px 0 0 #fff,0 1px 0 #fff,0 -1px 0 #fff;
+}
+
+.codeLabel {
+    font-weight: bold
+}
+
+.windLabel{
+    margin-top: 10px;
+}
+
+.nameLabel{
+    margin-top: 12px;
+}
+
+.loading{
+    position: absolute;
+    /*top:calc((100% - .8rem)/2);*/
+    bottom: 1.2rem;
+    left: calc((100% - 2.2rem)/2);
+    text-align: center;
+    font-size: .3rem;
+    color:#fff;
+    width: 2.2rem;
+    height: .8rem;
+    line-height: .8rem;
+    background: rgba(86,86,86,.8);
+    z-index: 999 !important;
+    border-radius: .4rem;
+}
+.loading i{
+    display:inline-block;
+    margin-right:.1rem;
+    /*color:#2D82FF;*/
+    font-weight:bold;
+    font-size: .38rem;
+    vertical-align: top;
+    animation: spin 3s linear infinite;
+}
+
+
+@keyframes spin
+{
+    0% {transform: rotate(0deg)}
+    100% {transform: rotate(360deg)}
+}
+
+*{
+    font-family: 'PingFang SC Regular','Microsoft YaHei';
+    box-sizing: border-box;
+}
+
+.g-page{
+    width: 100%;
+    min-height: 100vh;
+    background-color: #e0effd !important;
+    overflow: scroll;
+    background: url("../../../img/warningbg1.png") no-repeat;
+    background-size: 100% 100%;
+}
+.m-signal-header{
+    height: 39vw;
+    color: #ffffff;
+}
+.m-signal-info>main:nth-child(1){
+    text-indent: 2em;
+}
+.m-signal-info{
+    background: #fff;
+    box-shadow: 0 0 2.57rem 0.43rem rgba(98, 118, 255, 0.17);
+    border-radius: 2.7vw;
+    margin: 2.7vw 5.2vw;
+    padding: 3.3vw 6vw;
+    min-height: 50vw;
+    text-align: justify;
+    text-align-last: left;
+}
+.m-signal-info header{
+    font-size: 15px;
+    color: #010101;
+    /* font-weight: bold; */
+    overflow: hidden;
+    line-height: 5.1vw;
+    margin-bottom: 2vw;
+}
+.m-signal-info header::before{
+    content: '';
+    float: left;
+    width: 1.2vw;
+    height: 5.1vw;
+    border-radius: 0.28rem;
+    background: #7b83ff;
+    vertical-align: middle;
+    margin-right: 3vw;
+}
+.m-signal-info main{
+    line-height: 8vw;
+    font-size: 15px;;
+    color: #323232;
+}
+.m-signal-header img{
+    position: absolute;
+    left: 10%;
+    top: 17.7vw;
+    width: 19.1%;
+    border: 3px solid #ffffff;
+    border-radius: 5px;
+}
+.m-signal-type {
+    position: absolute;
+    top: 18vw;
+    left: 33%;
+    font-size: 17px;
+    line-height: 5.5vw;
+}
+.m-signal-time {
+    position: absolute;
+    font-size: 15px;
+    line-height: 4vw;
+    top: 29vw;
+    left: 33%;
+}
+

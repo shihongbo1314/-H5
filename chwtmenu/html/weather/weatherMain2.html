@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>锄禾问天</title>
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<!--清理缓存  -->
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control"
+	content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Expires" content="0">
+
+<link href="../../plugins/mui/css/mui.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../../css/loading.css">
+<link rel="stylesheet" type="text/css" href="css/radarMain.css"> 
+<link rel="stylesheet" type="text/css" href="css/weatherMain.css" />
+<style type="text/css">
+#rain-echarts {
+	width: 100%;
+	height: 136px;
+	bottom: 0px;
+	padding: 0 12px;
+}
+#yb3{
+	height: 115px;
+}
+</style>
+</head>
+<body>
+
+	<div class="mui-content">
+		<div class="weather-live">
+			<div class="content-div">
+				<a href="javascript:history.back(-1)"
+					class="mui-icon mui-icon-back mui-pull-left"></a>
+				<!-- 预警信息 -->
+				<div class="warning-div">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell"><img class="warningimg"
+							src="../../img/weather/warning.png"> <img class="yjimg"
+							src="../../img/weather/df_small.png"> <span class="yjtext">山东省气象局发布了大风蓝色预警</span>
+						</li>
+						<li class="mui-table-view-cell"><img class="warningimg"
+							src="../../img/weather/warning.png"> <img class="yjimg"
+							src="../../img/weather/df_small.png"> <span class="yjtext">山东省气象局发布了大风蓝色预警</span>
+						</li>
+					</ul>
+				</div>
+				<!-- 预警信息 end-->
+				<!--空气质量 日期 -->
+				<div class="multiple-div">
+					<!--空气质量  -->
+					<div class="air-div">
+						<img class="qualityimg" src="../../img/air/air_excellent.png">
+						<span class="qualityvalue">41</span> <span class="qualitylevel">优</span>
+					</div>
+					<!--空气质量  end-->
+					<!--更新时间  -->
+					<span class="updatetime"></span>
+					<!--更新时间  end-->
+
+				</div>
+				<!--空气质量 日期 end-->
+				<!--农历信息  -->
+				<span class="calendar"></span>
+				<!-- 实况 分钟天气 -->
+				<div class="multiple-div">
+					<div class="live-div">
+						<span class="live-tem">--</span>
+						<div class="state-div">
+							<img class="voice_img" src="../../img/weather/voice_end.png">
+							<span class="state-text">--</span>
+						</div>
+					</div>
+					<!--点我试试  -->
+					<!-- <div id="liveMap">
+						<div class="superli">
+							<ul>
+								<li onclick="interactive.openGreatBear(&#39;0&#39;, &#39;&#39;)"
+									aos="zoom-in"><a> <img
+										src="../../img/weather/livemap.png"></img>
+										<p>点我试试</p>
+								</a></li>
+							</ul>
+						</div>
+
+					</div> -->
+
+					<!--点我试试 end -->
+				</div>
+				<!-- 东南风 湿度 降水 -->
+				<div class="synthetical-div">
+					<div class="synthetical-cnt">
+						<span class="wind">风向风速 --</span> <span class="humidity">湿度 --</span> <span
+							class="rain">降水 --</span>
+					</div>
+				</div>
+				<!-- 东南风 湿度 降水 end-->
+
+			</div>
+		</div>
+		<div class="forecast-div">
+			<div class="introduce-div introduce-rain" onclick="onclickRadar()">
+				<span class="introduce-text"></span> <span
+					class="mui-icon mui-icon-arrowright"></span>
+			</div>
+			<!-- 两天预报 -->
+			<ul id="two-forecastUL" class="mui-table-view mui-grid-view">
+			</ul>
+		</div>
+		<!-- 未来60分钟降水预测 -->
+		<div class="condition-cnt">
+			<div class="condition-title">
+				<span class="title-rain flex">未来60分钟降水预测</span> <span
+					class="radarchart" onclick="onclickRadar()">雷达图</span> <span
+					class="mui-icon mui-icon-arrowright" onclick="onclickRadar()"></span>
+			</div>
+			<p class="rain-tips" ></p>
+			
+			<!--折线图  -->
+			 <div class="rainfallForecast">
+				<div id="hour_rain">
+					<div class="times">
+						<!-- <span class="time">
+							<span class="text">0</span>
+						</span>
+						<span class="time"></span> -->
+					
+						<span class="time">
+							<span class="text">10分钟</span>
+						</span>
+						<span class="time"></span>
+						
+						
+					<!-- 	<span class="time">
+							<span class="text">20</span>
+						</span>
+						<span class="time"></span> -->
+						
+						<span class="time">
+							<span class="text">30分钟</span>
+						</span>
+						<span class="time"></span>
+						
+						<!-- <span class="time">
+							<span class="text">40</span>
+						</span>
+						<span class="time"></span> -->
+						
+					<!-- 	<span class="time">
+							<span class="text">50</span>
+						</span>
+						<span class="time"></span> -->
+						
+						
+						<span class="time">
+							<span class="text">60分钟</span>
+						</span>
+						<span class="time last"></span>
+						
+						
+					</div>
+					<div class="level_c">
+
+						<div class="leve_1">
+							<span>大<i class="type_flag">雨</i></span>
+						</div>
+						<div class="leve_1">
+							<span>中<i class="type_flag">雨</i></span>
+						</div>
+						<div class="leve_1">
+							<span>小<i class="type_flag">雨</i></span>
+						</div>
+					</div>
+					
+					<canvas id="rain_line" width="400" height="100"
+						style="width: 400px; height: 100px;"></canvas>
+	
+					
+				</div>
+	
+			</div> 
+			
+			
+		</div>
+
+		<!-- 逐小时预报 -->
+		<div class="condition-cnt">
+			<div class="condition-title">
+				<span class="title-rain flex">逐小时预报</span> <img class="sunriseimg"
+					src="../../img/weather/sunrise.png"> <span
+					class="sunrise-text">05:12</span> <img class="sunsetimg"
+					src="../../img/weather/sunset.png"> <span class="sunset-text">19:12</span>
+			</div>
+			<div class="slide-box">
+					
+			</div>
+			
+			<div style="display: none;">
+			
+					<div class="hourDiv">
+						<div id="yb3"></div>
+						<ul class="houryb">
+							<li>
+								<img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png"> 
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+							<li>
+								 <img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png"> 
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+							
+							<li>
+								<img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png"> 
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+							<li>
+								 <img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png">
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+							<li>
+							 <img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png"> 
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+							<li>
+								 <img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png"> 
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+							<li>
+								<img  src="http://58.59.29.50:15004/shandong/dataFile/weather_icon/day/04.png">
+								<div class="weather-air">
+									<p>东南风</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+				
+
+			</div>
+
+
+		</div>
+
+		<!-- 7天预报 -->
+		<div class="condition-cnt">
+			<div class="condition-title" style="border: 0;">
+				<span class="title-rain flex">7天预报</span>
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active" href="#item1">趋势</a>
+					<div></div>
+					<a class="mui-control-item" href="#item2"> 列表 </a>
+				</div>
+			</div>
+			<!-- 趋势 -->
+			<div id="item1" class="prediction mui-control-content mui-active">
+				<div class="sevendayDiv">
+					<div id="yb1"></div>
+					<div id="yb2"></div>
+					<ul class="weekyb">
+
+					</ul>
+				</div>
+
+			</div>
+			<!-- 趋势 end-->
+			<!--列表  -->
+			<div id="item2" class="mui-control-content">
+				<ul id="forecastUL" class="mui-table-view">
+				</ul>
+
+			</div>
+			<!--列表  end-->
+
+		</div>
+	</div>
+
+
+	<script src="../../plugins/jQuery/jquery 1.9.min.js"></script>
+	<script src="../../plugins/mui/js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/base/base.js"></script>
+	<script type="text/javascript" src="../../js/loading.js"></script>
+	<script type="text/javascript" src="../../js/base/serverUtils.js"></script>
+	<script type="text/javascript"
+		src="../../plugins/echarts3.6.2/echarts.min.js"></script>
+<!-- 	<script type="text/javascript" src="http://nanning.welife100.com/js/echarts_4.2.1.js"></script> -->
+	<script src="js/ybEchart.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/Getfengxiang.js"></script>
+	<script src="js/Gettianqi.js"></script>
+
+	<script type="text/javascript" src="js/weatherMain.js"></script>
+
+	<script>
+		$(function() {
+			$(".superli ul li").mouseover(
+					function() {
+						$(this).addClass('superhover').siblings().removeClass(
+								'superhover');
+						var index = $(this).index();
+						number = index;
+						$('.supert').hide();
+						$('.supert:eq(' + index + ')').show();
+					});
+
+			var auto = 1; //等于1则自动切换，其他任意数字则不自动切换
+			if (auto == 1) {
+				var number = 0;
+				var maxNumber = $('.superli ul li').length;
+				function autotab() {
+					number++;
+					number == maxNumber ? number = 0 : number;
+					$('.superli ul li:eq(' + number + ')').addClass(
+							'superhover').siblings().removeClass('superhover');
+					$('.supert:eq(' + number + ')').show().siblings().hide();
+				}
+				var tabChange = setInterval(autotab, 3000);
+				//鼠标悬停暂停切换
+				$('.superli').mouseover(function() {
+					clearInterval(tabChange);
+				});
+				$('.superli').mouseout(function() {
+					tabChange = setInterval(autotab, 3000);
+				});
+			}
+		});
+	</script>
+
+
+</body>
+</html>

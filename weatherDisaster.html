@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--清理缓存  -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/style/index.css" />
+    <link rel="stylesheet" href="./assets/style/leaflet.css"
+        integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+        crossorigin="" />
+</head>
+
+<body>
+    <div id="app">
+        <template>
+            <div class="header">
+                <img src="./assets/zuojiantou.png" @click="this.window.location.href = './prefecture.html'">
+                <span>气象灾害</span>
+            </div>
+            <van-tabs v-model="activeName" @change="change">
+                <van-tab title="当前气象预警" name="a">
+                    <div style="position: relative;height: 100%;">
+                        <div id="map" ref="map" style="height:239px;"></div>
+                        <div class="Map_message"><span>{{this.zhlqDataTime.substring(0,10)}}
+                                更新数据</span></div>
+                        <div class="body_title">当前预警信号</div>
+                        <div style="overflow-y: auto;height: 7rem;
+                        line-height: 7rem;">
+                            <div class="body_body">
+                                <div
+                                    style="display:flex;justify-content: space-evenly;flex-direction: column;height: 100%;flex:1;">
+                                    <div v-for="box in divList" class="box">{{box}}</div>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content: space-evenly;flex-direction: column;height: 100%;flex: 1;">
+                                    <div v-for="box,index in divListColorOne" class="boxColor"><i
+                                            :class="index == 0 ? 'Colorbox':''"
+                                            :style="{background:(index==0?'#355FFF':'')}"></i>{{box}}</div>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content: space-evenly;flex-direction: column;height: 100%;flex: 1;">
+                                    <div v-for="box,index in divListColorTwo" class="boxColor"><i
+                                            :class="index == 0 ? 'Colorbox':''"
+                                            :style="{background:(index==0?' #E5D505':'')}"></i>{{box}}</div>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content: space-evenly;flex-direction: column;height: 100%;flex: 1;">
+                                    <div v-for="box,index in divListColorThree" class="boxColor"><i
+                                            :class="index == 0 ? 'Colorbox':''"
+                                            :style="{background:(index==0?' #F49904':'')}"></i>{{box}}</div>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content: space-evenly;flex-direction: column;height: 100%;flex: 1;">
+                                    <div v-for="box,index in divListColorFour" class="boxColor"><i
+                                            :class="index == 0 ? 'Colorbox':''"
+                                            :style="{background:(index==0?'#DC2E28':'')}"></i>{{box}}</div>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content: space-evenly;flex-direction: column;height: 100%;flex: 1;">
+                                    <div v-for="box,index in divListColorFive" class="boxColor">{{box}}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="body_footer">
+                            <div class="body_footer_title">
+                                <div @click="SelectBoxShowBtn2">全省<img src="./assets/arrows.png">
+                                    <div class="SelectBox2" v-if="SelectBoxShow2">
+                                        <span v-for="type,index in DiquList" :class="activethree == index ?'active':''"
+                                            @click="EleClickthree(type,index)">{{type}}</span>
+                                    </div>
+                                </div>
+                                <div @click="SelectBoxShowBtn">{{typeInfo}}
+                                    <img src="./assets/arrows.png">
+                                    <div class="SelectBox" v-if="SelectBoxShow">
+                                        <span v-for="type,index in yujingList" :class="active == index ?'active':''"
+                                            @click="EleClick(type,index)">{{type}}</span>
+                                    </div>
+                                </div>
+                                <div @click="SelectBoxShowBtn1">{{JibieInfo}}
+                                    <img src="./assets/arrows.png">
+                                    <div class="SelectBox1" v-if="SelectBoxShow1">
+                                        <span v-for="type,index in yujingjibie" :class="activeTwo == index ?'active':''"
+                                            @click="EleClickTwo(type,index)">{{type}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="body_footer_body">
+                                <div class="body_footer_body_box" v-for="item  in footer_bodyList">
+                                    <img
+                                        :src="item.HEADLINE.substring(item.HEADLINE.indexOf('布')).substring(1,5) | suitableImg">
+                                    <div style="margin-left: 15px;">
+                                        <h5>{{item.HEADLINE}}</h5>
+                                        <span style="font-size: 14px;display: block;">{{item.SENDER}}</span>
+                                        <span style="font-size: 14px;">{{item.EFFECTIVE}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </van-tab>
+                <van-tab title="气象灾害预报" name="b">
+                    <!-- <div style="position: relative;">
+                    <div class="Map_message"><span>{{this.zhlqDataTime.substring(0,4) + '-'
+                            +this.zhlqDataTime.substring(4,6)+ '-' +this.zhlqDataTime.substring(6,8)+ '-'
+                            +this.zhlqDataTime.substring(8,10)}}时发布</span></div>
+                    <div class="Map_legend">
+                        <div v-for="item in legendList" style="display:flex;align-items: center;
+                        justify-content: space-evenly;padding:.1875rem;">
+                            <i :style="{'background':item.color}" class="style_color"></i>
+                            <div>{{item.txt}}</div>
+                        </div>
+                    </div>
+                    <div class="Map_time">
+                        <div class="Map_time_box" v-for="(item,index) in timeList" :key="index"
+                            @click.stop="BtnClick(index)" :class="active == index ?'active':''">{{item.time}}</div>
+                    </div>
+                    <div class="Map-Select" @click="IsShow">
+                        {{SelectName}}
+                        <img src="./assets/arrows.png">
+                    </div>
+                    <div class="zaihai" v-if="show">
+                        <span v-for="item,index in zhlqList" :class="isshow == index ? 'hoverName':''"
+                            @click="IsShowClick(index,item.name)">{{item.name}}</span>
+                    </div>
+                    <div id="mapSecond" ref="mapSecond" style="height:calc(100vh - 88px)"></div>
+                </div> -->
+                    <iframe src="./chwtmenu/html/disaster/disasterMain.html" frameborder="0"
+                        style="height: 100%;width:100%;"></iframe>
+                </van-tab>
+            </van-tabs>
+        </template>
+    </div>
+</body>
+
+</html>
+<script src="./utils/vue.js"></script>
+<script src="./utils/vant.js"></script>
+<script src="./utils/axios.js"></script>
+<script src="./utils/leaflet.js"
+    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+    crossorigin=""></script>
+<script src="./utils/index.js"></script>
+<script>
+    Vue.use(vant.Lazyload);
+    new Vue({
+        el: '#app',
+        filters: {
+            suitableImg(val) {
+                switch (val) {
+                    case '雷电黄色':
+                        return './yjImgStr/雷电黄色.jpg'
+                        break;
+                    case '暴雨黄色':
+                        return './yjImgStr/暴雨黄色.jpg'
+                        break;
+                    case '暴雨橙色':
+                        return './yjImgStr/暴雨橙色.jpg'
+                        break;
+                    case '雷雨大风':
+                        return './yjImgStr/moren.jpg'
+                        break;
+                    case '大雾黄色':
+                        return './yjImgStr/大雾黄色.jpg'
+                        break;
+                    case '大风黄色':
+                        return './yjImgStr/大风黄色.jpg'
+                        break;
+                    case '雷电橙色':
+                        return './yjImgStr/雷电橙色.jpg'
+                        break;
+                    case '大雾红色':
+                        return './yjImgStr/大雾红色.jpg'
+                        break;
+                    case '高温黄色':
+                        return './yjImgStr/高温黄色.jpg'
+                        break;
+                    case '高温橙色':
+                        return './yjImgStr/高温橙色.jpg'
+                        break;
+                    default:
+                        return './yjImgStr/moren.jpg'
+                        break;
+                }
+            }
+        },
+        data: {
+            activeName: 'a',
+            divList: ['信号', '大风', '大雾', '暴雨', '暴雪', '寒潮', '高温', '干旱', '雷电', '霜冻', '冰雹', '道路结冰', '霾', '台风', '沙尘暴',],
+            divListColorOne: ['蓝色', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            divListColorTwo: ['黄色', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            divListColorThree: ['橙色', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            divListColorFour: ['红色', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            divListColorFive: ['合计', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            footer_bodyList: [
+
+            ],
+            yujingList: [
+                '大风', '大雾', '暴雨', '暴雪', '寒潮', '高温', '干旱', '雷电', '霜冻', '冰雹', '道路结冰', '霾', '台风', '沙尘暴', '所有类型'
+            ],
+            yujingjibie: ['蓝色', '黄色', '橙色', '红色', '所有级别'],
+            DiquList: [],
+            /*  legendList: [
+                 {
+                     color: '#355FFF',
+                     txt: '大风'
+                 },
+                 {
+                     color: '#E5D505',
+                     txt: '狂风'
+                 },
+                 {
+                     color: '#DC2E29',
+                     txt: '暴风'
+                 }
+             ], */
+            typeInfo: '所有类型',
+            JibieInfo: '所有级别',
+            active: 0,
+            activeTwo: 0,
+            SelectBoxShow: false,
+            SelectBoxShow1: false,
+            SelectBoxShow2: false,
+            zhlqDataTime: "",
+            show: false,
+            isshow: 0,
+            SelectName: '大风',
+            zhlqList: [
+                {
+                    name: '大风',
+                    type: "dafeng",
+                    icon: "dataFile/image/warningType/countType2_7.png",
+                },
+                {
+                    name: '大雨',
+                    type: "dayu",
+                    icon: "dataFile/image/warningType/countType2_4.png",
+                },
+                {
+                    name: '暴雨',
+                    type: "baoyu",
+                    icon: "dataFile/image/warningType/countType2_5.png",
+                },
+                {
+                    name: '大暴雨',
+                    type: "dabaoyu",
+                    icon: "dataFile/image/warningType/countType2_6.png",
+                },
+
+                {
+                    name: '高温',
+                    type: "gaowen",
+                    icon: "dataFile/image/warningType/countType2_8.png",
+                },
+                {
+                    name: '强降温',
+                    type: "qiangjiangwen",
+                    icon: "dataFile/image/warningType/countType2_9.png",
+                },
+            ],
+            zhandianlayer: null,
+            image: null
+        },
+        created() {
+            this.getDataList();
+            var url = location.search;
+            if (url.split("=")[1]) {
+                let code = url.split("?")[1].split('=')[1];
+                this.getCodeLatLon(code)
+            }
+        },
+        mounted() {
+            this.$nextTick(() => {
+                if (this.map) {
+                    this.map.remove();
+                }
+                this.InitMap()
+            })
+
+        },
+        methods: {
+            getCodeLatLon(code) {
+                axios.get('http://58.59.29.50:15019/chwt-isd/data/region/get', {
+                    params: {
+                        regionCode: code
+                    }
+                }).then((res) => {
+                    const latLon = res.data.records;
+                    L.marker([latLon.lat, latLon.lon], {
+                        icon: L.divIcon({
+                            html: "<div>" + "<img src='./yjImgStr/dangqian.png'/>" + "</div>",
+                            className: "mapShowCityName",
+                            iconSize: [12, 12],
+                            iconAnchor: [12, 12],
+                        }),
+                        zIndexOffset: 1000
+                    }).addTo(this.map);
+                })
+            },
+            getDataList() {
+                this.DiquList = []
+                axios.get('http://58.59.29.50:15019/chwt-isd/data/yj-effective/get').then((res) => {
+                    this.footer_bodyList = res.data.records;
+                    console.log(this.footer_bodyList)
+                    this.yunashuju = res.data.records;
+                    this.zhlqDataTime = res.data.records[0].EFFECTIVE;
+                    if (this.footer_bodyList.length == 0) {
+                        var imageUrl = './yjImgStr/zanwushuju.png',
+                            imageBounds = [[38.47939467327645, 122.89306640625001], [34.252676117101515, 114.65332031250001]];
+                        this.image = L.imageOverlay(imageUrl, imageBounds).addTo(this.map);
+                    } else {
+                        this.mage ? this.map.removeLayer(this.mage) : ""
+                        this.footer_bodyList.map((item) => {
+                            const type = item.HEADLINE.substring(item.HEADLINE.indexOf('布')).substring(1, 5)
+                            const Diqu = item.HEADLINE.substring(0, 3)
+                            this.DiquList.push(Diqu)
+                            if (item.LAT) {
+                                this.zhandianlayer = L.layerGroup();
+                                switch (type) {
+                                    case '高温黄色':
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/高温黄色.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+                                    case '大雾黄色':
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/大雾黄色.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+                                    case '大雾红色':
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/大雾红色.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+                                    case '高温黄色':
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/高温黄色.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+                                    case '高温橙色':
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/高温橙色.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+                                    case '雷电橙色':
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/雷电橙色.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+
+                                    default:
+                                        L.marker([item.LAT, item.LON], {
+                                            icon: L.divIcon({
+                                                html: "<div>" + "<img src='./yjImgStr/moren.jpg'/>" + "</div>",
+                                                className: "mapShowCityName",
+                                                iconSize: [12, 12],
+                                                iconAnchor: [12, 12],
+                                            }),
+                                        }).addTo(this.zhandianlayer);
+                                        break;
+                                }
+                                this.zhandianlayer.addTo(this.map);
+                            }
+                            /*  console.log(this.zhandianlayer) */
+
+                        })
+
+                    }
+                    this.statistics()
+                })
+
+            },
+            InitMap() {
+                this.map = L.map(this.$refs.map, {
+                    center: [36.39, 118.78049], // 地图中心
+                    zoom: 6, //缩放比列
+                    zoomControl: false, //禁用 + - 按钮
+                    doubleClickZoom: false, // 禁用双击放大
+                    attributionControl: false, // 移除右下角leaflet标识
+                });
+                L.layerGroup([
+                    L.tileLayer(
+                        "http://t{s}.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=5599eda6504656ba246f63c15ec22a6f",
+                        {
+                            subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"], maxZoom: 18,
+                            minZoom: 5,
+                            detectRetina: true
+                        }
+                    ),
+                    L.tileLayer(
+                        "http://t{s}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=5599eda6504656ba246f63c15ec22a6f",
+                        {
+                            subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+                            maxZoom: 18,
+                            minZoom: 5,
+                            detectRetina: true
+                        }
+                    ),
+                ]).addTo(this.map);
+                axios.get('./assets/山东省.json').then((res) => {
+
+                    var layerPostalcodes = L.geoJSON(res.data, {
+                        style: function () {
+                            return {
+                                color: "rgb(53,95,255)",
+                                fill: false,
+                                weight: 1,
+                            };
+                        },
+                    }).addTo(this.map);
+                    /*  console.log(this.map.getBounds()) */
+                })
+            },
+            InitMapSecond() {
+                this.mapSecond = L.map(this.$refs.mapSecond, {
+                    center: [36.39, 118.78049], // 地图中心
+                    zoom: 6, //缩放比列
+                    zoomControl: false, //禁用 + - 按钮
+                    doubleClickZoom: false, // 禁用双击放大
+                    attributionControl: false, // 移除右下角leaflet标识
+                });
+                L.layerGroup([
+                    L.tileLayer(
+                        "http://t{s}.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=5599eda6504656ba246f63c15ec22a6f",
+                        {
+                            subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"], maxZoom: 18,
+                            minZoom: 5,
+                            detectRetina: true
+                        }
+                    ),
+                    L.tileLayer(
+                        "http://t{s}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=5599eda6504656ba246f63c15ec22a6f",
+                        {
+                            subdomains: ["0", "1", "2", "3", "4", "5", "6", "7"],
+                            maxZoom: 18,
+                            minZoom: 5,
+                            detectRetina: true
+                        }
+                    ),
+                ]).addTo(this.mapSecond);
+                axios.get('https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=370000_full').then((res) => {
+                    var layerPostalcodes = L.geoJSON(res.data, {
+                        style: function () {
+                            return {
+                                color: "rgb(53,95,255)",
+                                fill: false,
+                                weight: 1,
+                            };
+                        },
+                    }).addTo(this.mapSecond);
+                })
+            },
+            change() {
+                /* this.$nextTick(() => {
+                    if (this.mapSecond) {
+                        this.mapSecond.remove();
+                    }
+                    this.InitMapSecond()
+                }) */
+            },
+            BtnClick(index) {
+                this.active = index;
+            },
+            SelectBoxShowBtn() {
+                this.SelectBoxShow = !this.SelectBoxShow;
+            },
+            SelectBoxShowBtn1() {
+                this.SelectBoxShow1 = !this.SelectBoxShow1;
+            },
+            SelectBoxShowBtn2() {
+                this.SelectBoxShow2 = !this.SelectBoxShow2;
+            },
+            EleClick(type, index) {
+                this.active = index;
+                this.typeInfo = type;
+                this.footer_bodyList = this.yunashuju;
+                this.footer_bodyList = this.footer_bodyList.filter((item) => {
+                    let str = item.HEADLINE.substring(item.HEADLINE.indexOf('布')).substring(1, 3);
+                    if (str == type) {
+                        return true
+                    } else if (type == '所有类型') {
+                        return true
+                    }
+                })
+            },
+            EleClickTwo(type, index) {
+                this.activeTwo = index;
+                this.JibieInfo = type;
+                this.footer_bodyList = this.yunashuju;
+                this.footer_bodyList = this.footer_bodyList.filter((item) => {
+                    let typeInfo = item.HEADLINE.substring(item.HEADLINE.indexOf('布')).substring(1, 3);
+                    let str = item.HEADLINE.substring(item.HEADLINE.indexOf('布')).substring(3, 5);
+                    if (this.typeInfo == '所有类型') {
+                        if (str == type) {
+                            return true
+                        } else if (type == '所有级别') {
+                            return true
+                        }
+                    } else {
+                        if (this.typeInfo == typeInfo && str == type) {
+                            return true
+                        } else if (type == '所有级别') {
+                            return true
+                        }
+                    }
+
+                })
+            },
+            EleClickthree(type, index) {
+
+            },
+            IsShow() {
+                this.show = true;
+            },
+            IsShowClick(index, name) {
+                this.SelectName = name;
+                this.isshow = index;
+                this.show = false;
+            },
+            // 预警统计
+            statistics() {
+                this.footer_bodyList.map((item) => {
+                    const type = item.HEADLINE.substring(item.HEADLINE.indexOf('布')).substring(1, 5)
+                    switch (type) {
+                        case '大风蓝色':
+                            this.divListColorOne[1] += 1
+                            break;
+                        case '大风黄色':
+                            this.divListColorTwo[1] += 1
+                            break;
+                        case '大风橙色':
+                            this.divListColorThree[1] += 1
+                            break;
+                        case '大风红色':
+                            this.divListColorFour[1] += 1
+                            break;
+                        case '大雾蓝色':
+                            this.divListColorOne[2] += 1
+                            break;
+                        case '大雾黄色':
+                            this.divListColorTwo[2] += 1
+                            break;
+                        case '大雾橙色':
+                            this.divListColorThree[2] += 1
+                            break;
+                        case '大雾红色':
+                            this.divListColorFour[2] += 1
+                            break;
+                        case '暴雨蓝色':
+                            this.divListColorOne[3] += 1
+                            break;
+                        case '暴雨黄色':
+                            this.divListColorTwo[3] += 1
+                            break;
+                        case '暴雨橙色':
+                            this.divListColorThree[3] += 1
+                            break;
+                        case '暴雨红色':
+                            this.divListColorFour[3] += 1
+                            break;
+                        case '暴雪蓝色':
+                            this.divListColorOne[4] += 1
+                            break;
+                        case '暴雪黄色':
+                            this.divListColorTwo[4] += 1
+                            break;
+                        case '暴雪橙色':
+                            this.divListColorThree[4] += 1
+                            break;
+                        case '暴雪红色':
+                            this.divListColorFour[4] += 1
+                            break;
+                        case '寒潮蓝色':
+                            this.divListColorOne[5] += 1
+                            break;
+                        case '寒潮黄色':
+                            this.divListColorTwo[5] += 1
+                            break;
+                        case '寒潮橙色':
+                            this.divListColorThree[5] += 1
+                            break;
+                        case '寒潮红色':
+                            this.divListColorFour[5] += 1
+                            break;
+                        case '高温蓝色':
+                            this.divListColorOne[6] += 1
+                            break;
+                        case '高温黄色':
+                            this.divListColorTwo[6] += 1
+                            break;
+                        case '高温橙色':
+                            this.divListColorThree[6] += 1
+                            break;
+                        case '高温红色':
+                            this.divListColorFour[6] += 1
+                            break;
+                        case '干旱蓝色':
+                            this.divListColorOne[7] += 1
+                            break;
+                        case '干旱黄色':
+                            this.divListColorTwo[7] += 1
+                            break;
+                        case '干旱橙色':
+                            this.divListColorThree[7] += 1
+                            break;
+                        case '干旱红色':
+                            this.divListColorFour[7] += 1
+                            break;
+                        case '雷电蓝色':
+                            this.divListColorOne[8] += 1
+                            break;
+                        case '雷电黄色':
+                            this.divListColorTwo[8] += 1
+                            break;
+                        case '雷电橙色':
+                            this.divListColorThree[8] += 1
+                            break;
+                        case '雷电红色':
+                            this.divListColorFour[8] += 1
+                            break;
+                        case '霜冻蓝色':
+                            this.divListColorOne[9] += 1
+                            break;
+                        case '霜冻黄色':
+                            this.divListColorTwo[9] += 1
+                            break;
+                        case '霜冻橙色':
+                            this.divListColorThree[9] += 1
+                            break;
+                        case '霜冻红色':
+                            this.divListColorFour[9] += 1
+                            break;
+                        case '冰雹蓝色':
+                            this.divListColorOne[10] += 1
+                            break;
+                        case '冰雹黄色':
+                            this.divListColorTwo[10] += 1
+                            break;
+                        case '冰雹橙色':
+                            this.divListColorThree[10] += 1
+                            break;
+                        case '冰雹红色':
+                            this.divListColorFour[10] += 1
+                            break;
+                        case '道路结冰蓝色':
+                            this.divListColorOne[11] += 1
+                            break;
+                        case '道路结冰黄色':
+                            this.divListColorTwo[11] += 1
+                            break;
+                        case '道路结冰橙色':
+                            this.divListColorThree[11] += 1
+                            break;
+                        case '道路结冰红色':
+                            this.divListColorFour[11] += 1
+                            break;
+                        case '霾':
+                            this.divListColorOne[12] += 1
+                            break;
+                        case '霾':
+                            this.divListColorTwo[12] += 1
+                            break;
+                        case '霾':
+                            this.divListColorThree[12] += 1
+                            break;
+                        case '霾':
+                            this.divListColorFour[12] += 1
+                            break;
+                        case '台风':
+                            this.divListColorOne[13] += 1
+                            break;
+                        case '台风':
+                            this.divListColorTwo[13] += 1
+                            break;
+                        case '台风':
+                            this.divListColorThree[13] += 1
+                            break;
+                        case '台风':
+                            this.divListColorFour[13] += 1
+                            break;
+                        case '沙尘暴':
+                            this.divListColorOne[14] += 1
+                            break;
+                        case '沙尘暴':
+                            this.divListColorTwo[14] += 1
+                            break;
+                        case '沙尘暴':
+                            this.divListColorThree[14] += 1
+                            break;
+                        case '沙尘暴':
+                            this.divListColorFour[14] += 1
+                            break;
+
+                        default:
+                            break;
+                    }
+                    for (let index = 1; index < 14; index++) {
+                        this.divListColorFive[index] = this.divListColorOne[index] + this.divListColorTwo[index] + this.divListColorThree[index] + this.divListColorFour[index];
+                    }
+                })
+            }
+        },
+    }).$mount('#app')
+</script>
+<style>
+    body,
+    html {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+    }
+
+    #app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        height: 2.75rem;
+        text-align: center;
+        line-height: 2.75rem;
+        position: relative;
+        color: #000;
+    }
+
+    .header img {
+        width: 1.375rem;
+        height: 1.375rem;
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .van-tab {
+        font-size: 1rem;
+    }
+
+    .van-tab--active {
+        color: #1777FF;
+    }
+
+    .mapShowCityName img {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .van-tabs {
+        height: 100%;
+    }
+
+    .van-tabs__line {
+        background-color: #1777FF;
+        height: .125rem;
+        width: 10rem;
+    }
+
+    .van-tabs__content {
+        height: calc(100% - 2.75rem);
+    }
+
+    .van-tab__pane {
+        height: 100%;
+    }
+
+    .Map_message {
+        width: 9.375rem;
+        height: 1.875rem;
+        line-height: 1.875rem;
+        background: rgba(0, 0, 0, 0.50);
+        border-radius: .25rem;
+        position: absolute;
+        top: .625rem;
+        z-index: 999;
+        left: .625rem;
+        text-align: center;
+
+    }
+
+    .Map_message span {
+        font-size: .875rem;
+        color: #FFFFFF;
+        letter-spacing: -.0688rem;
+        font-weight: 400;
+    }
+
+    .Map_legend {
+        width: 64px;
+        height: 72px;
+        background: #FFFFFF;
+        border-radius: 4px;
+        position: absolute;
+        top: calc(.625rem + 1.875rem + .625rem);
+        z-index: 999;
+        left: .625rem;
+        font-size: .75rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .Map_legend .style_color {
+        width: 1rem;
+        height: .75rem;
+        border-radius: .125rem;
+
+    }
+
+    .body_title {
+        height: 2.5rem;
+        line-height: 2.5rem;
+        padding-left: .9375rem;
+
+    }
+
+    .Map_time {
+        position: absolute;
+        bottom: 10%;
+        right: 0;
+        left: 0;
+        width: calc(100% - 3.125rem);
+        margin: 0 auto;
+        height: 3.75rem;
+        z-index: 999;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+
+    .Map_time .Map_time_box {
+        width: 16%;
+        height: 1.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        background: rgba(255, 255, 255, 0.80);
+        margin: .3125rem;
+        border-radius: .25rem;
+    }
+
+    .Map-Select {
+        width: 5rem;
+        height: 2.625rem;
+        background: #FFFFFF;
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.07);
+        border-radius: .25rem;
+        position: absolute;
+        right: .625rem;
+        top: .9375rem;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+
+    }
+
+    .zaihai {
+        position: absolute;
+        right: .625rem;
+        top: calc(2.625rem + .9375rem);
+        background: #FFFFFF;
+        width: 5rem;
+        z-index: 999;
+        height: 12.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .zaihai span {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        flex: 1;
+        line-height: 2.0625rem;
+        font-size: .875rem;
+    }
+
+    .hoverName {
+        background-color: #007aff;
+        border-radius: 20px;
+    }
+
+    .Map-Select img {
+        transform: rotate(90deg);
+    }
+
+    .body_body {
+        overflow-y: auto;
+        padding-left: 10px;
+        padding-right: 10px;
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 0.1px solid#F6F6F6;
+        border-top: 0.1px solid#F6F6F6;
+    }
+
+    .body_body .box {
+        margin: 5px auto;
+        min-width: 3rem;
+        height: 1.25rem;
+        background: #EDF1FA;
+        border-radius: .125rem;
+        text-align: center;
+        font-size: .875rem;
+        line-height: 1.25rem;
+    }
+
+    .body_body .boxColor {
+        margin: 5px auto;
+        min-width: 3rem;
+        height: 1.25rem;
+        border-radius: .125rem;
+        text-align: center;
+        font-size: .875rem;
+        line-height: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .body_body .Colorbox {
+        width: 4px;
+        height: 14px;
+        display: inline-block;
+        border-radius: 1px;
+    }
+
+    .body_footer {
+        width: 100%;
+        margin-top: .3125rem;
+    }
+
+    .body_footer .body_footer_title {
+        height: 2.5rem;
+        line-height: 2.5rem;
+        padding-left: 0.9375rem;
+        display: flex;
+        justify-content: space-evenly;
+        padding-left: 20%;
+        font-size: .875rem;
+        position: relative;
+    }
+
+    .body_footer .body_footer_title img {
+        transform: rotate(90deg);
+        vertical-align: middle;
+        margin-left: .3125rem;
+        width: 1rem;
+    }
+
+    .body_footer .body_footer_title .SelectBox {
+        width: 5rem;
+        position: absolute;
+        top: 2.5rem;
+        background: rgb(244, 244, 244);
+        border-radius: .25rem;
+        z-index: 999;
+    }
+
+    .body_footer .body_footer_title .SelectBox1 {
+        width: 5rem;
+        position: absolute;
+        top: 2.5rem;
+        background: rgb(244, 244, 244);
+        border-radius: .25rem;
+        z-index: 999;
+    }
+
+    .body_footer .body_footer_title .SelectBox2 {
+        width: 5rem;
+        position: absolute;
+        top: 2.5rem;
+        left: 5rem;
+        background: rgb(244, 244, 244);
+        border-radius: .25rem;
+        z-index: 999;
+    }
+
+    .body_footer .body_footer_title .SelectBox2 span {
+        display: block;
+        text-align: center;
+    }
+    .body_footer .body_footer_title .SelectBox1 span {
+        display: block;
+        text-align: center;
+    }
+
+    .body_footer .body_footer_title .SelectBox span {
+        display: block;
+        text-align: center;
+    }
+
+    .selectBack {
+        background: #007AFD;
+    }
+
+    .body_footer .body_footer_body {
+        width: 100%;
+        height: calc(100% - 2.5rem);
+    }
+
+    .body_footer .body_footer_body .body_footer_body_box {
+        padding: .9375rem;
+        height: 6rem;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        border-bottom: 0.1px solid#F6F6F6;
+    }
+
+    .body_footer .body_footer_body .body_footer_body_box img {
+        width: 64px;
+        height: 53.71px;
+    }
+
+    .body_footer .body_footer_body .body_footer_body_box h5 {
+        margin: 0;
+    }
+
+    .active {
+        background: #007AFD !important;
+        color: #FFF;
+    }
+</style>

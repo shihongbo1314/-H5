@@ -1,0 +1,86 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+	margin: 0;
+	padding: 0
+}
+
+body {
+	width: 100%;
+	min-width: 320px;
+	max-width: 640px;
+	padding: 0;
+	margin: 0 auto;
+	font-family: PingFangSC-Semibold; color : #333333;
+	font-size: 15px;
+	color: #333333;
+}
+body, html {
+	height: 100%;
+}
+li {
+	list-style: none;
+}
+/*七天预报*/
+.sevendayDiv {
+	overflow: auto;
+	width: 100%;
+	position: relative;
+}
+
+.prediction ul {
+	width: calc(70px * 7);
+}
+
+.prediction li {
+	width: 70px;
+	float: left;
+	text-align: center;
+	margin-top: 12px;
+	font-size: 14px;
+}
+
+.prediction li p.date {
+	padding: 4px 0 8px;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.prediction li img {
+	width: 28px;
+	display: block;
+	margin: 0 auto;
+}
+
+.prediction li img.night {
+	margin: 140px auto 6px;
+}
+
+.prediction li div {
+	margin-top: 8px;
+}
+
+.prediction li span.color {
+	width: 54%;
+	height: 4px;
+	background: #d4c50e;
+	display: inline-block;
+	border-radius: 6px;
+	float: left;
+	margin: 4px 23%;
+}
+
+
+#yb1, #yb2 {
+	position: absolute;
+	width: calc(70px * 7);
+	height: 100px;
+}
+
+#yb1 {
+	top: 120px;
+}
+
+#yb2 {
+	top: 160px;
+}
+

@@ -1,0 +1,412 @@
+
+* { touch-action: pan-y; } 
+::-webkit-scrollbar-track {
+    background: none;
+}
+::-webkit-scrollbar-thumb {
+   background: none;
+}
+.nav_top{
+	margin-top: 10px;
+}
+
+.info{
+	text-align: center;
+	position: relative;
+}
+.info .title{
+	font-size: 24px;
+}
+
+#hour_rain{
+	background-size: 400px auto;
+	height: 300px;
+	max-width: 400px;
+	margin: 0 auto;
+	position: relative;
+}
+#circle_rain{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	/*width: 448px;
+	height: 224px;*/
+	margin-left: -93px;
+	margin-top: -90px;
+}
+
+
+#btn_play{
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	left: 50%;
+	margin-left: -25px;
+	bottom: -25px;
+	z-index: 999
+}
+
+
+@-webkit-keyframes circle 
+{
+	from {-webkit-transform: rotate(0deg);}
+	to {-webkit-transform: rotate(360deg);}
+}
+#btn_play.pause .bg{
+	-webkit-animation-name:'circle';
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function:linear;
+}
+
+#play_time{
+	color: white;
+	position: absolute;
+	width: 80px;
+	text-align: center;
+	bottom: -20px;
+	left: -15px;
+}
+.tuli{
+	position: absolute;
+	left: 5px;
+	bottom: -2px;
+	font-size: 14px;
+	line-height: 15px;
+}
+.tuli li{
+	height: 20px;
+	line-height: 20px;
+}
+.tuli span{
+	display: inline-block;
+	width: 30px;
+	height: 15px;
+	border-radius: 3px;
+	margin-right: 3px;
+	margin-top: 2px;
+}
+
+.rain_small{
+	background-color: #03a9f4;
+}
+.rain_middle{
+	background-color: #0288d1;
+}
+.rain_big{
+	background-color: #01579b;
+}
+
+.info{
+	position: absolute;
+	right: 50px;
+	top: 200px;
+	width: 500px;
+	height: 230px;
+	z-index: 1001;
+	background: white;
+	box-shadow: 2px 2px 5px rgba(0,0,0,.6);
+}
+
+
+#rain_line{
+	height: 300px;
+}
+.tuli{
+	display: none;
+}
+.level_c{
+	z-index: 8;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	text-align: left;
+	line-height: 0;
+}
+.level_c > div{
+	border-top: 1px dashed rgba(0, 0, 0, 0.25);
+	height: 33%;
+	width: 100%;
+}
+.level_c > div span{
+	position: relative;
+	display: inline-block;
+	left: 101%;
+	width: 30px;
+	margin: 14px 0 0 2px;
+	font-size: 12px;
+	font-family: "AvenirNextCondensed-Medium", "AvenirNextLTW01-MediumC 721311", "Arial Narrow", Verdana, sans-serif;
+	text-transform: uppercase;
+	color: #111;
+	text-align: left;
+}
+.level_c > div:first-child {
+	border-top: none;
+}
+#hour_rain{
+	width: 100%;
+	height: 100px;
+}
+#hour_rain .times{
+	z-index: 8;
+	position: absolute;
+	height: 6px;
+	bottom: -4px;
+	width: 100%;
+	white-space: nowrap;
+	line-height: 0;
+	border-top: 3px solid #111;
+	white-space: nowrap;
+	line-height: 0;
+	font-size: 0;
+}
+#hour_rain .time{
+	position: relative;
+	display: inline-block;
+	width: 16.66%;
+	height: 100%;
+	border-right: 1px solid #111;
+	border-left: 1px solid #111;
+}
+#hour_rain .time.last{
+}
+.text{
+	position: absolute;
+	width: 50px;
+	right: -28px;
+	top: 12px;
+	text-align: center;
+	color: #111;
+	opacity: 0.9;
+	font-size: 14px;
+	font-family: "AvenirNextCondensed-Medium", "AvenirNextLTW01-MediumC 721311", "Arial Narrow", Verdana, sans-serif;
+}
+.tool_bar{
+	position: absolute;
+	bottom: 30px;
+	left: 50%;
+	width: 400px;
+	margin-left: -200px;
+}
+.tool_bar div{
+	float: left;
+	width: 25%;
+}
+.tool_bar div span{
+	display: block;
+	margin: 0 auto;
+	width: 80px;
+	height: 40px;
+	line-height: 40px;
+	color: white;
+	background-color: rgba(0,0,0,.5);
+	text-align: center;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+.tool_bar div.on span{
+	background-color: rgba(0,0,0,.8);
+}
+.tab_bar{
+	position: absolute;
+	right: 10px;
+	bottom: 20px;
+	background-color: white;
+	border-radius: 5px 0 0 0;
+	padding: 10px;
+	display: none;
+}
+
+.bg_null .bg{
+	display: none;
+}
+.bg_null .locate{
+	color: #000;
+	background: white;
+	padding-left: 0;
+}
+.bg_null .info{
+	box-shadow: 1px 1px 5px rgba(0,0,0,.6);
+}
+.bg_null #btn_play{
+	background: rgba(0,0,0,0.4);
+	border-radius: 25px;
+	box-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+}
+.bg_null .tool_bar{
+	display: none;
+}
+
+.bg_null #play_time{
+	color: #000;
+}
+.bg_null #btn_share{
+	display: none;
+}
+.no_js .info{
+	display: none;
+}
+
+/*for moile*/
+@media screen and (max-width: 600px){
+	.info{
+		position: relative;
+		width: 100%;
+		min-height: 170px;
+		max-height: 230px;
+		height: auto;
+		padding-bottom: 30px;
+		left: 0;
+		top: 0px;
+		margin-top: 10px;
+	}
+	#hour_rain{
+		height: 80px;
+	}
+	#hour_rain{
+		max-width: 300px;
+	}
+
+
+	.level_c > div span{
+		left: 90%;
+	}
+	.tool_bar{
+		width: 96%;
+		margin: 0 auto;
+		z-index: 900;
+		position: static;
+		margin-top: 50px;
+	}
+	.tool_bar div span{
+		width: 50px;
+		height: 30px;
+		line-height: 30px;
+		font-size: 14px;
+	}
+	.tab_bar{
+		position: static;
+		border-radius: 5px;
+		margin-top: 90px;
+	}
+	.amap-maptypecontrol{
+		display: none;
+	}
+}
+.type_flag{
+	font-style: normal;
+}
+
+/* 添加背景图 */
+.mui-content{
+	width: 100%;
+	height:100%;
+	background: url(../image/weatherbg.png) no-repeat center center;
+	background-size: 100% 100%;
+	display: flex;
+    flex-direction: column; 
+}
+
+.showAddress{
+	font-size: 14px;
+	margin:12px 10px;
+	margin-bottom: 0;
+}
+.showAddress img{
+	width: 23px;
+	height: 23px;
+}
+.showAddress .label-address{
+	padding-top: 1px;
+	letter-spacing: 1px
+}
+/*未来60分钟降水预测  */
+.rainfallForecast{
+	position: relative;
+	text-align: center;
+	background: #fff;
+	margin:10px 10px 0px 10px;
+	border-radius: 10px;
+	min-height: 190px;
+    max-height: 230px;
+    height: auto;
+	color: #333333;
+   	padding: 10px;
+   	padding-bottom: 0;
+}
+.rainfallForecast .title{
+	color: #333333;
+	font-size: 24px;
+}
+/*雷达图  */
+.redar-box{
+	position: relative;  
+	height: calc(100% - 45%);
+	background:rgba(255,255,255,0.4);
+    border-radius: 10px;
+    margin:12px 10px 10px 10px;
+}
+.redar-content{
+	 padding:10px;
+}
+
+/*控制按钮*/
+#controlBtn1>label{
+	display: inline-block; 
+	width:30px;
+	height:30px;
+	padding: 18px;
+	background-color: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 6px #ccc;	
+} 
+
+ #controlBtn1{
+    position: absolute;
+	z-index: 1000;
+	right:5;
+	margin: 5px 0 0 0;
+ }
+ #controlBtn1>label.imgBtn1{
+	background-repeat: no-repeat;
+ 	background-size: 30px 30px;
+ 	background-position: center;
+ 	background-image:url(../image/legendShow.png);
+ }
+ #controlBtn1>label.imgBtn1.active{
+	background-image:url(../image/legendHide.png);
+	background-repeat: no-repeat;
+	background-size: 30px 30px;
+	background-position: center;
+ }
+/* 底部制作单位 */
+.producerDiv{
+	width: 100%;
+	min-width: 320px;
+	max-width: 640px;
+	border-top:0.5px solid #1777FF;
+	/* background: #ffffff; */
+	padding: 5px;
+	position: fixed;
+	bottom: 0;
+}
+.producerDiv p{
+	margin-bottom: 0;
+	text-align: center;
+	font-family: PingFangSC-Regular;
+	font-size: 12px;
+	color: rgba(250,250,250,0.8);
+	letter-spacing: 0;
+	font-weight: 400;
+}
+.producerDiv .more{
+	margin-top: 2px;
+	text-align: center;
+	font-family: PingFangSC-Regular;
+	font-size: 12px;
+	color: rgba(250,250,250,0.8);
+	letter-spacing: 0;
+	font-weight: 400;
+}

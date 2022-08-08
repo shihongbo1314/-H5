@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--清理缓存  -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/style/index.css" />
+</head>
+
+<body>
+
+    <div id="app">
+        <template>
+            <div class="header">
+                <img src="./assets/zuojiantou.png" @click="this.window.location.href = './prefecture.html'">
+                <span>生长适宜度预报</span>
+            </div>
+            <div class="header_top">
+                <van-row>
+                    <van-col span="6" @click="SelectClick">
+                        <img :src="this.cropName | suitableImgs" style="width:3.75rem;padding-left:.625rem;">
+                        <img src="./assets/arrows.png" class="nthtwo">
+                    </van-col>
+                    <div class="VisibleList" v-if="dialogVisible" ref="VisibleList">
+                        <div v-for="crop,index in cropList" :key="index"
+                            style="display: flex;flex-direction: column;box-sizing: border-box;"
+                            :class="index == active ? 'active':''"
+                            @click="BtnClick(index,crop.imagePath,crop.id,crop.cropName,crop.farmName)">
+                            <img :src="crop.farmName | suitableImgs" style="width: 2.75rem;margin: auto;">
+                            <span style="font-size:0.75rem;">{{crop.farmName}}</span>
+                        </div>
+                    </div>
+                    <van-col span="8" offset="1">
+                        <span>生育阶段</span>
+                        <span>{{birthName.replaceAll('营养积累与','')}}</span>
+                    </van-col>
+                    <van-col span="8">
+                        <span>今日生长适宜度</span>
+                        <span>{{levelday}}<img :src="levelday | suitableImg" style="vertical-align: text-bottom;margin-left: .3125rem;width: 1.125rem;
+                                height: 1.125rem;"></span>
+                    </van-col>
+                </van-row>
+            </div>
+            <div class="header_body">
+                <div style="width: 100%;">
+                    <div class="echarts" ref="echarts" style="height:120px;width: 100%;"></div>
+                </div>
+                <div>
+                    <div class="header_body_header">
+                        <span style="font-size: .75rem;">风力</span>
+                        <div>
+                            <span v-for="item in spansListOne">{{item}}</span>
+                        </div>
+                    </div>
+                    <div class="header_body_header" style=" margin-top: .3125rem;">
+                        <span style="font-size: .75rem;">生长</span>
+                        <div style="color: #FFF;">
+                            <span v-for="item in spansList" :style="{background:item.background}"
+                                style="width:35%;margin-right: 2px;">{{item.txt}}<br><img
+                                    :src="item.txt | suitableImgshengzhang" style="vertical-align: middle;
+                        margin-left: .3125rem;height: .75rem;width: .75rem;padding-bottom: 3px;"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="header_footer">
+                <img src="./assets/sucai.png" style="position: absolute;
+            top: -1.5625rem;">
+                <div class="header_footer_first">
+                    <span>生长适宜度说明</span>
+                    <img src="./assets/yuyinpng.png" style="margin-left:.625rem;width: 1.5rem;" @click="PlayClickone">
+
+                </div>
+                <div class="header_footer_second">
+                    <span
+                    style="line-height:23px"
+                       >当{{Sevendayadvice}},{{levelday}}{{birthName.replaceAll('营养积累与','')}}{{cropName}}生长</span>
+                </div>
+                <div class="header_footer_three">
+                    <span>参考对策建议</span>
+                    <img src="./assets/yuyinpng.png" style="margin-left:.625rem;width: 1.5rem" @click="PlayClicktwo">
+                </div>
+                <div class="header_footer_four">
+                    <span style="padding-bottom: 0;" >{{totalMsg}}</span>
+                </div>
+            </div>
+            <!--制作单位  -->
+            <div class="producerDiv">
+                <p class="company">山东省气象服务中心制作</p>
+                <p class="more">更多信息下载锄禾问天APP</p>
+            </div>
+            <!--制作单位  end-->
+            <var-loading type="wave" size="large" v-if="loading" description="加载中...." color="#2979ff" />
+        </template>
+    </div>
+
+</body>
+
+</html>
+<script src="./utils/vue.js"></script>
+<script src="./utils/vant.js"></script>
+<script src="./utils/echarts.js"></script>
+<script src="./utils/axios.js"></script>
+<script src="./utils/weather.js"></script>
+<script src="./utils/varlet.js"></script>
+<script>
+    Vue.use(vant.Lazyload);
+    Vue.use(echarts);
+    Vue.use(Varlet);
+    new Vue({
+        el: '#app',
+        filters: {
+            suitableImg(val) {
+                switch (val) {
+                    case '适宜':
+                        return './assets/xiaolian.png'
+                        break;
+                    case '较适宜':
+                        return './assets/xiaolian2.png'
+                        break;
+                    case '不适宜':
+                        return './assets/xiaolian3.png'
+                        break;
+                    case '不在生育期':
+                        return './assets/xiaolian3.png'
+                        break;
+                    default:
+                        break;
+                }
+            },
+            suitableImgshengzhang(val) {
+                switch (val) {
+                    case '适宜':
+                        return './assets/shiyi.png'
+                        break;
+                    case '较适宜':
+                        return './assets/jiaoshiyi.png'
+                        break;
+                    case '不适宜':
+                        return './assets/bushiyi.png'
+                        break;
+                    default:
+                        break;
+                }
+            },
+            suitableImgs(val) {
+                switch (val) {
+                    case '苹果':
+                        return './assets/zuowu/苹果.png'
+                        break;
+                    case '樱桃':
+                        return './assets/zuowu/樱桃.png'
+                        break;
+                    case '姜':
+                        return './assets/zuowu/姜.png'
+                        break;
+                    case '大豆':
+                        return './assets/zuowu/大豆.png'
+                        break;
+                    case '小麦':
+                        return './assets/zuowu/小麦.png'
+                        break;
+                    case '棉花':
+                        return './assets/zuowu/棉花.png'
+                        break;
+                    case '玉米':
+                        return './assets/zuowu/玉米.png'
+                        break;
+                    case '花生':
+                        return './assets/zuowu/花生.png'
+                        break;
+                    case '日照绿茶':
+                        return './assets/zuowu/日照绿茶.png'
+                        break;
+                    case '酿酒葡萄':
+                        return './assets/zuowu/酿酒葡萄.png'
+                        break;
+                    case '青萝卜':
+                        return './assets/zuowu/青萝卜.png'
+                        break;
+                    case '石榴':
+                        return './assets/zuowu/石榴.png'
+                        break;
+                    case '红杏':
+                        return './assets/zuowu/红杏.png'
+                        break;
+                    case '黄烟':
+                        return './assets/zuowu/黄烟.png'
+                        break;
+                    case '山药':
+                        return './assets/zuowu/山药.png'
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+        data: {
+            spansListOne: [],
+            spansList: [
+
+            ],
+            birthName: "",
+            cropName: "",
+            level: "",
+            levelday:"",
+            levelList: [],
+            dialogVisible: false,
+            cropList: [],
+            DecropPath: './cropImg/pingguo.png',
+            cropPath: 'http://58.59.29.50:15004/cropImg/',
+            imagePath: '',
+            active: 0,
+            DataList: {},
+            Sevendayadvice: "",
+            totalMsg: "",
+            forecastData: [],
+            XTime: [],
+            tem_max: [],
+            tem_min: [],
+            loading: false,
+        },
+        created() {
+            this.getCropList()
+            this.getDataList()
+        },
+        methods: {
+            getCropList() {
+                axios.get('http://58.59.29.50:15004/shandongt/farmProductController.do?getAllFarmProduct').then((res) => {
+                    this.cropList = res.data.o.filter((item) => { return item.farmName.indexOf('大棚') == -1 });
+                    this.cropList = this.cropList.filter((item) => { return item.farmName.indexOf('山药') == -1 });
+                })
+            },
+            getDataList() {
+                this.XTime = [];
+                this.tem_max = [];
+                this.tem_min = [];
+                let regionCode = 370102;
+                axios.get('http://58.59.29.50:15019/chwt-isd/data/grow/get', {
+                    params: {
+                        regionCode: regionCode
+                    }
+                }).then((res) => {
+                    this.DataList = res.data.records.grow;
+                    this.forecastData = res.data.records.forecastData;
+                    this.forecastData.map((item) => {
+                        this.XTime.push(item.date.substring(6, 8) + '日')
+                        this.tem_max.push(item.tem_max.toFixed(0))
+                        this.tem_min.push(item.tem_min.toFixed(0))
+                        this.spansListOne.push(GetWindDirTxt(item.win_s.toFixed(0)) + '' + (fsTurnTofj(item.win_s.toFixed(0)) == fsTurnTofj(item.win_s_max.toFixed(0)) ? fsTurnTofj(item.win_s.toFixed(0)) : fsTurnTofj(item.win_s.toFixed(0)) + '~' + fsTurnTofj(item.win_s_max.toFixed(0))))
+                    })
+                    this.totalMsg = this.DataList[Object.keys(this.DataList)[0]]['totalMsg']
+                    this.birthName = this.DataList[Object.keys(this.DataList)[0]]['birthName']
+                    this.cropName = this.DataList[Object.keys(this.DataList)[0]]['cropName']
+                    this.levelday = this.DataList[Object.keys(this.DataList)[0]]['data'][0]['level']
+                    var url = location.search;
+                    if (url.split("=")[1]) {
+                        let urlNum = url.split("=")[1].split('&')[0];
+                        let imaPath = url.split("&")[1].split('=')[1];
+                        let id = url.split("id")[1].split('=')[1];
+                        let cropName = url.split("id")[1].split('=')[1];
+                        this.BtnClick(urlNum, imaPath, id, cropName)
+                    }
+                    this.InitEcharts()
+                })
+            },
+            InitEcharts() {
+                var myChart = echarts.init(this.$refs.echarts);
+                var that = this;
+                var option = {
+                    grid: {
+                        top: '30%',
+                        left: '5%',
+                        right: '5%',
+                        bottom: '0%',
+                        containLabel: true
+                    },
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow',    // 指示器类型（'line' 直线指示器；'shadow' 阴影指示器；'none' 无指示器；'cross' 十字准星指示器。）
+                            snap: false,    // 坐标轴指示器是否自动吸附到点上。默认自动判断。
+                            animation: true,     // 是否开启动画
+                            animationDuration: 1000,     // 初始动画时长
+                            animationDurationUpdate: 200,    // 数据更新动画的时长
+                        },
+                        textStyle: {
+                            color: '#000',     // 文字的颜色
+                            fontStyle: 'normal',    // 文字字体的风格（'normal'，无样式；'italic'，斜体；'oblique'，倾斜字体） 
+                            fontWeight: 'normal',    // 文字字体的粗细（'normal'，无样式；'bold'，加粗；'bolder'，加粗的基础上再加粗；'lighter'，变细；数字定义粗细也可以，取值范围100至700）
+                            lineHeight: '50',    // 行高 
+                        },
+                        triggerOn: 'mousemove|click',
+                        formatter: function (params) {
+                            if (that.levelList.length != 0) {
+                                var result = '';
+                                result += params[0].data + '~' + params[1].data + '°' + "</br>" + that.levelList[params['0'].dataIndex] + '生长 ' + "</br>"
+                               /*  console.log(that.levelList[params['0'].dataIndex]) */
+                                switch (that.levelList[params['0'].dataIndex]) {
+                                    case '较适宜':
+                                    that.Sevendayadvice = that.DataList[key]['indicator'][that.levelList[params['0'].dataIndex]];
+                                    that.levelday = that.levelList[params['0'].dataIndex];
+                                        break;
+                                    case '适宜':
+                                    that.Sevendayadvice = that.DataList[key]['indicator'][that.levelList[params['0'].dataIndex]];
+                                    that.levelday = that.levelList[params['0'].dataIndex];
+                                        break;
+                                    case '不适宜':
+                                    that.Sevendayadvice = that.DataList[key]['indicator'][that.levelList[params['0'].dataIndex]];
+                                    that.levelday = that.levelList[params['0'].dataIndex];
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                that.Sevendayadvice = that.DataList[key]['indicator'][that.levelList[params['0'].dataIndex]];
+                                return result
+                            }
+
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: this.XTime,
+                        axisTick: {
+                            show: false,
+                            alignWithLabel: true
+                        },
+                        axisLine: {
+                            show: false,
+                            lineStyle: {
+                                color: "#000",
+                                width: 2 //这里是坐标轴的宽度
+                            }
+                        }
+                    },
+                    yAxis: {
+                        name: "°C",
+                        splitLine: {
+                            show: false,
+                            lineStyle: {
+                                type: 'dashed'
+                            }
+                        },
+                        type: 'value',
+                        position: 'left',
+                        axisTick: {
+                            show: true
+                        },
+                        axisLine: {
+                            show: true,
+                            lineStyle: {
+                                color: "#000",
+                            }
+                        }
+                    },
+                    series: [
+
+                        {
+                            data: this.tem_min,
+                            type: 'line',
+                            smooth: true,
+                            symbol: "none",
+                            lineStyle: {
+                                color: '#4EB5F9'
+                            },
+                        },
+                        {
+                            data: this.tem_max,
+                            type: 'line',
+                            smooth: true,
+                            symbol: "none",
+                            lineStyle: {
+                                color: '#7E75FF'
+                            },
+                        },
+                    ]
+                };
+                myChart.setOption(option);
+            },
+            SelectClick() {
+                this.dialogVisible = !this.dialogVisible;
+            },
+            BtnClick(index, imagePath, id, cropName,farmName) {
+                this.spansList = []
+                this.levelList = []
+                for (key in this.DataList) {
+                    if (id == key) {
+                        this.totalMsg = this.DataList[key]['totalMsg']
+                        this.cropName = this.DataList[key]['cropName']
+                        this.birthName = this.DataList[key]['birthName'] ? this.DataList[key]['birthName'] : this.DataList[key]['errorMsg']
+                        this.Sevendayadvice = this.DataList[key]['indicator'] ? this.DataList[key]['indicator'][this.levelday] : this.DataList[key]['errorMsg']
+                        if (this.DataList[key]['data']) {
+                            this.DataList[key]['data'].map((item) => {
+                                this.levelList.push(item.level)
+                                let background;
+                                switch (item.level) {
+                                    case '适宜':
+                                        background = '#29B56F'
+                                        break;
+                                    case '较适宜':
+                                        background = '#FFB83A'
+                                        break;
+                                    case '不适宜':
+                                        background = '#FF6A54'
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                this.spansList.push({
+                                    txt: item.level,
+                                    background: background
+                                })
+                            })
+                            break;
+                        } else {
+                            this.spansList = []
+                            this.levelday = '不在生育期'
+                        }
+
+                    }else{
+                        this.cropName = farmName
+                        this.totalMsg = '暂无数据'
+                    }
+                }
+                this.active = index;
+                this.dialogVisible = false;
+            },
+            // 语音播报
+            PlayClickone() {
+                var that = this;
+                this.loading = true;
+                var text = `当${Sevendayadvice}${level}${birthName.replaceAll('营养积累与','')}${cropName}生长`;
+                axios.get('https://chuhewentian.com:15014/shandongt/speechRecognition.do?createVideoByText', {
+                    params: {
+                        content: text
+                    }
+                }).then((res) => {
+                    if (res.data.e == 1) {
+                        this.loading = false;
+                        var mp3Url = res.data.o;
+                        if (mp3Url != null) {
+                            mp3Url = "https://chuhewentian.com:15014/" + mp3Url.split('shandong/')[1]
+                            this.player = new Audio(mp3Url);
+                            this.player.play(); //播放 mp3这个音频对象
+                            this.player.addEventListener('ended', function () {
+                                that.ishow = false;
+                            })
+                        }
+                    } else {
+                        vant.Notify({ type: 'danger', message: '播放失败,无法转成语音文件' });
+                    }
+
+                })
+            },
+            // 语音播报
+            PlayClicktwo() {
+                var that = this;
+                this.loading = true;
+                var text = `${this.totalMsg}`;
+                axios.get('https://chuhewentian.com:15014/shandongt/speechRecognition.do?createVideoByText', {
+                    params: {
+                        content: text
+                    }
+                }).then((res) => {
+                    if (res.data.e == 1) {
+                        this.loading = false;
+                        var mp3Url = res.data.o;
+                        if (mp3Url != null) {
+                            mp3Url = "https://chuhewentian.com:15014/" + mp3Url.split('shandong/')[1]
+                            var player = new Audio(mp3Url);
+                            player.play(); //播放 mp3这个音频对象
+                            player.addEventListener('ended', function () {
+                                that.ishow = false;
+                            })
+                        }
+                    }
+                })
+            },
+
+        },
+    }).$mount('#app')
+</script>
+<style>
+    body,
+    html {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+    }
+
+    #app {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        background-color: rgb(244, 244, 244);
+    }
+
+    .header {
+        height: 2.75rem;
+        text-align: center;
+        line-height: 2.75rem;
+        position: relative;
+        background-color: #FFF;
+    }
+
+    /* 底部制作单位 */
+    .producerDiv {
+        width: 100%;
+        min-width: 320px;
+        max-width: 640px;
+        background: #ffffff;
+        padding: 5px;
+    }
+
+    .var-loading {
+        position: absolute;
+        z-index: 999;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .producerDiv p {
+        margin-bottom: 0;
+        text-align: center;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #666666;
+        letter-spacing: 0;
+        font-weight: 400;
+    }
+
+    .producerDiv .more {
+        margin-top: 2px;
+        text-align: center;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #666666;
+        letter-spacing: 0;
+        font-weight: 400;
+    }
+
+    .header img {
+        width: 1.375rem;
+        height: 1.375rem;
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .header_top {
+        height: 5rem;
+        min-height: 5rem;
+        background: #FFFFFF;
+        border-radius: 0.5rem;
+        width: calc(100% - 1.25rem);
+        margin: 0.625rem auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .van-row {
+        text-align: center;
+        width: 100%;
+    }
+
+    .van-col {
+        position: relative;
+    }
+
+    .van-col span:nth-child(1) {
+        height: 1.25rem;
+        line-height: 1.25rem;
+        color: #41588A;
+        font-size: .75rem;
+        width: calc(100% - 0.625rem);
+        margin: .3125rem auto;
+        background: #EDF1FA;
+        display: block;
+        border-radius: .125rem;
+    }
+
+    .van-col span:nth-child(2) {
+        height: 1.25rem;
+        line-height: 1.25rem;
+        width: calc(100% - 0.625rem);
+        margin: auto;
+        display: block;
+        margin-top: .9375rem;
+        font-size: 1rem;
+    }
+
+    .nthtwo {
+        position: absolute;
+        top: .3125rem;
+        height: 1.25rem;
+        left: 4.375rem;
+        transform: rotate(90deg);
+    }
+
+    .header_body {
+        height: 412px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        min-height: 8.75rem;
+        width: calc(100% - 1.25rem);
+        margin: 0.625rem auto;
+        margin-top: 0;
+        background: #FFFFFF;
+        border-radius: .5rem;
+    }
+
+    .header_body_header {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
+    .header_body_header div {
+        width: 85%;
+        display: flex;
+        text-align: center;
+        font-size: 12px;
+        color: #000;
+        margin-right: 9px;
+    }
+
+    .header_body_header div span {
+        background: #EDF1FA;
+        border-radius: 2px;
+        width: 34%;
+        margin-right: 2px;
+    }
+
+    .header_footer {
+        position: relative;
+        margin-top: 1.5625rem !important;
+        width: calc(100% - 1.25rem);
+        margin: 0.625rem auto;
+        background-image: linear-gradient(180deg, #91D2FF 0%, #FFFFFF 100%);
+        border-radius: .5rem;
+        height: calc(100% - 8.75rem - 7.75rem);
+    }
+
+    .header_footer_first {
+        display: flex;
+        position: absolute;
+        top: -0.9375rem;
+        width: 100%;
+        text-align: center;
+        left: 3%;
+    }
+
+    .header_footer_first span {
+        display: inline-block;
+        background: #1777FF;
+        color: #FFF;
+        width: 40%;
+        font-size: .9375rem;
+        border-radius: 1.25rem .125rem;
+    }
+
+    .header_footer_first img {
+        vertical-align: text-bottom;
+    }
+
+    .header_footer_second {
+        background: #FFFFFF;
+        border-radius: .25rem;
+        margin-top: .9375rem !important;
+        width: calc(100% - 1.25rem);
+        margin: 0 auto;
+
+    }
+
+    .header_footer_second span {
+        padding: .625rem;
+        display: inline-block;
+        font-size: .9375rem;
+    }
+
+    .header_footer_three {
+        display: flex;
+        width: 100%;
+        text-align: center;
+        padding: 7px 0 0 .625rem;
+    }
+
+    .header_footer_three span {
+        display: inline-block;
+        background: #1777FF;
+        color: #FFF;
+        width: 35%;
+        font-size: .9375rem;
+        border-radius: 1.25rem .125rem;
+    }
+
+    .header_footer_three img {
+        vertical-align: text-bottom;
+    }
+
+    .header_footer_four {
+        background: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        border-radius: .25rem;
+        margin-top: .625rem !important;
+        width: calc(100% - 1.25rem);
+        margin: 0 auto;
+        margin-bottom: .4375rem;
+        height: calc(100% - 130px);
+        min-height: 75px;
+    }
+
+    .header_footer_four span {
+        padding: .625rem;
+        display: inline-block;
+        font-size: .9375rem;
+    }
+
+    .VisibleList {
+        background: #FFF;
+        overflow-y: auto;
+        height: 31.25rem;
+        text-align: center;
+        width: 6rem;
+        z-index: 2;
+        border: 0.0625rem solid #f3f2f2;
+        border-radius: 0.5rem;
+        position: absolute;
+        top: 8.125rem;
+    }
+
+    .active {
+        background: linear-gradient(180deg, #76C0F9 0%, #5992EC 100%);
+        border-radius: .5rem;
+        margin: .3125rem;
+    }
+</style>

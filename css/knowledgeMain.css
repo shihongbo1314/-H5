@@ -1,0 +1,95 @@
+body,html{
+	font-family: 微软雅黑;
+}
+
+h5 {
+	padding-top: 8px;
+	padding-bottom: 8px;
+	text-indent: 12px;
+}
+#listUL
+{
+    width: 100%;
+    margin-top: 20px;
+}
+#listUL li {
+	width: 50%;
+	float: left;
+	margin-bottom: 10px;
+}
+
+#listUL .itemDiv {
+	display: block; 
+	width: 83%;
+	margin: 0 auto;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+	background-color: #00BFFF;
+	border-radius: 5px;
+	
+}
+
+#listUL .itemDiv img {
+	width: 100%;
+	display: block;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	height: 110px;
+}
+
+#listUL .itemDiv p {
+	font-size: 15px;
+	text-align: center;
+	color: #fff;
+	line-height: 35px; 
+}
+ul, li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+a {
+	display: inline-block;
+	text-decoration: none;
+	color: #fff;
+}
+
+img {
+	vertical-align: middle;
+}
+
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body {
+	font-size: 15px;
+	margin-top: 8px;
+	color: #333;
+}
+.mui-bar{
+	background: #009cff;
+	
+}
+.mui-title{
+	color: white;
+}
+.mui-content > .mui-table-view:first-child{
+	margin-top: 0px;
+}
+.mui-table-view:before,.mui-table-view:after{
+	height: 0;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-object {
+    height: 120px;
+    width: 90%;
+    max-width: 90%;
+}
+.mui-table-view {
+	background: transparent;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body{
+	color: rgb(80, 83, 89);
+	font-size: 14px;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell {
+    padding: 15px 0 5px 14px;
+}
+
+

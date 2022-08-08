@@ -1,0 +1,215 @@
+/* 菜单栏 */
+.control-item-inline {
+	width: 33.33%;
+	display: inline-block;
+	float: left;
+}
+
+.mui-segmented-control {
+	background-color: #ffffff;
+}
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active
+	{
+	color: #007aff;
+	border-top: 0px solid #c8c7cc;
+	border-bottom: 0px solid #c8c7cc;
+}
+
+.mui-segmented-control.mui-scroll-wrapper .mui-scroll {
+	height: 40px;
+}
+
+.mui-segmented-control .mui-control-item {
+	line-height: 21px;
+	text-align: center;
+}
+
+.mui-segmented-control .mui-control-item .data {
+	font-family: PingFangSC-Medium;
+	font-size: 16px;
+	letter-spacing: 0;
+	line-height: 24px;
+	font-weight: 500;
+	color: #333333;
+}
+
+.mui-segmented-control .mui-control-item .time {
+	font-family: PingFangSC-Regular;
+	font-size: 14px;
+	text-align: center;
+	line-height: 20px;
+	font-weight: 400;
+	color: #333333;
+	margin-top: 8px;
+}
+
+.mui-segmented-control .mui-control-item .line {
+	width: 100%;
+	line-height: 2px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 6px;
+}
+
+.mui-segmented-control .mui-control-item .line p {
+	width: 24px;
+	height: 2px;
+	border-radius: 1px;
+	display: inline-block;
+	background: #ffffff;
+	margin-bottom: 0px;
+}
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active .data
+	{
+	color: #1777FF !important;
+}
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active .time
+	{
+	color: #1777FF !important;
+}
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active .line p
+	{
+	background: #1777FF !important;
+}
+
+.time-bar {
+	margin-top: 44px !important;
+}
+/* 内容 */
+.mui-content {
+	padding-top: 128px !important;
+	background-color: transparent;
+}
+
+.mui-col-xs-3 {
+	width: 33.33% !important;
+}
+
+.mui-content>.mui-table-view:first-child {
+	margin-top: 0px;
+}
+
+ .mui-grid-view.mui-grid-9 {
+	background-color: #ffffff !important;
+	
+} 
+
+.index-Div{
+	background-color: #ffffff !important;
+	padding: 6px;
+	padding-bottom: 0px;
+}
+.mui-grid-view.mui-grid-9  {
+	border:0px solid #eee !important;
+}
+.mui-grid-view.mui-grid-9 .mui-table-view-cell {
+	padding: 6px;
+	position: relative;
+	border:0px solid #eee !important;
+ 
+}
+
+.index-view {
+	background: #F8F9FB;
+	border: 1px solid rgba(237, 241, 250, 1);
+	border-radius: 8px;
+	padding: 16px 0;;
+	text-align: center;
+}
+
+.index-view img {
+	width: 56px;
+	height: 56px;
+}
+
+.index-view .index-state {
+	font-family: PingFangSC-Medium;
+	font-size: 16px;
+	color: #333333;
+	letter-spacing: 0;
+	text-align: center;
+	line-height: 24px;
+	font-weight: 500;
+	margin-top: 8px;
+}
+
+.index-view .index-type {
+	font-family: PingFangSC-Medium;
+	font-size: 14px;
+	color: rgba(65, 88, 138, 0.80);
+	text-align: center;
+	font-weight: 500;
+	margin-top: 4px;
+	margin-bottom: 0;
+	line-height: 20px;
+}
+
+.index-details {
+	position: relative;
+	background: #EDF1FA;
+	border-radius: 8px;
+	margin:0px 6px;
+	margin-top:4px;
+	padding: 9px 20px;
+	display: none;
+	
+}
+.index-details-three{
+	padding-bottom:12px;
+}
+.index-details span {
+	width: 0;
+	height: 0;
+	font-size: 0;
+	overflow: hidden;
+	position: absolute;
+}
+
+.index-details span.bot {
+	border-width: 8px;
+	border-style: dashed dashed solid;
+	border-color: transparent transparent #EDF1FA;
+	top: -14px;
+	margin-left: 10%;
+}
+.index-details p {
+	font-family: PingFangSC-Regular;
+	font-size: 16px;
+	color: #41588A;
+	text-align: left;
+	line-height: 24px;
+	font-weight: 400;
+	margin-bottom: 0;
+}
+/* 底部制作单位 */
+.producerDiv{
+	width: 100%;
+	min-width: 320px;
+	max-width: 640px;
+	/* background: #ffffff; */
+	padding: 5px;
+	margin-top: 20px;
+	
+}
+.producerDiv p{
+	margin-bottom: 0;
+	text-align: center;
+	font-family: PingFangSC-Regular;
+	font-size: 12px;
+	color: #666666;
+	letter-spacing: 0;
+	font-weight: 400;
+}
+.producerDiv .more{
+	margin-top: 2px;
+	text-align: center;
+	font-family: PingFangSC-Regular;
+	font-size: 12px;
+	color: #666666;
+	letter-spacing: 0;
+	font-weight: 400;
+}

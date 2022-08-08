@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--清理缓存  -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/style/index.css">
+</head>
+
+<body>
+    <div id="app" :style="{fontSize:Size + 'px'}">
+        <template>
+            <div class="header">锄禾问天专区</div>
+            <div class="container">
+                <div class="Bg_header">
+                    <div class="Bg_position" @click="location">
+                        <img src="./assets/location.png" style="width:1.5rem;">
+                        <span>{{texts}}</span>
+                        <img src="./assets/arrows.png" style="transform: translateY(-95%);width: 1rem;height: 1rem;">
+                    </div>
+                    <div class="Bg_Play">
+                        <img src="./assets/play.png" v-if="!ishow" style="width:2.5625rem;" @click="PlayClick">
+                        <img src="./assets/bofang.png" v-else style="width:2.5625;" @click="PlayPause">
+                    </div>
+                    <div class="Bg_Select" @click="SelectClick">
+                        <img :src="cropName | suitableImgs" style="width:3.75rem;">
+                        <img src="./assets/xiala.png" class="nthtwo">
+                        <div class="VisibleList" v-if="dialogVisible" ref="VisibleList">
+                            <div v-for="crop,index in cropList" :key="index"
+                                style="display: flex;flex-direction: column;box-sizing: border-box;"
+                                :class="index == active ? 'active':''"
+                                @click="BtnClick(index,crop.imagePath,crop.id,crop.farmName)">
+                                <img :src="crop.farmName | suitableImgs" style="width: 2.75rem;margin: auto;">
+                                <span style="font-size:0.75rem;">{{crop.farmName}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Bg_info">
+                        <span>{{birthName}}</span>
+                        <span>{{level}}</span>
+                    </div>
+
+                </div>
+                <div class="Bg_body">
+                    <div v-for="item,index in items" :key="index" class="item" @click="routerGo(item.message)">
+                        <div class="active1"><img :src="item.img" style="width: 100%;height:100%;"></div>
+                        <div class="context">{{item.message}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="center">
+                    <div @click="lessen"><img src="./assets/shrink.png">缩小</div>
+                    <span>{{Baifen+ '%'}} </span>
+                    <div style="text-align: right;" @click="magnify">放大<img src="./assets/magnify.png"></div>
+                </div>
+            </div>
+            <transition name="fade">
+                <var-picker cascade :columns="columns" @cancel="show = false" v-if="show" @confirm="confirm" />
+            </transition>
+            <var-loading type="wave" size="large" v-if="loading" description="加载中...." color="#2979ff" />
+        </template>
+    </div>
+
+</body>
+
+</html>
+<script src="./utils/vue.js"></script>
+<script src="./utils/axios.js"></script>
+<script src="./utils/varlet.js"></script>
+<script src="./utils/vant.js"></script>
+<script>
+    Vue.use(Varlet)
+    Vue.use(vant);
+    new Vue({
+        el: '#app',
+        filters: {
+            suitableImgs(val) {
+                switch (val) {
+                    case '苹果':
+                        return './assets/zuowu/苹果.png'
+                        break;
+                    case '樱桃':
+                        return './assets/zuowu/樱桃.png'
+                        break;
+                    case '姜':
+                        return './assets/zuowu/姜.png'
+                        break;
+                    case '大豆':
+                        return './assets/zuowu/大豆.png'
+                        break;
+                    case '小麦':
+                        return './assets/zuowu/小麦.png'
+                        break;
+                    case '棉花':
+                        return './assets/zuowu/棉花.png'
+                        break;
+                    case '玉米':
+                        return './assets/zuowu/玉米.png'
+                        break;
+                    case '花生':
+                        return './assets/zuowu/花生.png'
+                        break;
+                    case '日照绿茶':
+                        return './assets/zuowu/日照绿茶.png'
+                        break;
+                    case '酿酒葡萄':
+                        return './assets/zuowu/酿酒葡萄.png'
+                        break;
+                    case '青萝卜':
+                        return './assets/zuowu/青萝卜.png'
+                        break;
+                    case '石榴':
+                        return './assets/zuowu/石榴.png'
+                        break;
+                    case '红杏':
+                        return './assets/zuowu/红杏.png'
+                        break;
+                    case '黄烟':
+                        return './assets/zuowu/黄烟.png'
+                        break;
+                    case '山药':
+                        return './assets/zuowu/山药.png'
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+        data: {
+            items: [
+                { img: './assets/01.png', message: '天气查询' },
+                { img: './assets/02.png', message: '生长适宜度预报' },
+                { img: './assets/03.png', message: '农事活动预报' },
+                { img: './assets/04.png', message: '气象灾害' },
+                { img: './assets/05.png', message: '农用气象专报' },
+                { img: './assets/06.png', message: '美丽家园' },
+                { img: './assets/07.png', message: '生活指数' },
+                { img: './assets/08.png', message: '农业气象科普' },
+            ],
+            dialogVisible: false,
+            cropList: [],
+            id: '100000',
+            active: 0,
+            cropName: "苹果",
+            show: false,
+            Size: 16,
+            Baifen: 36,
+            ishow: false,
+            DataList: {},
+            birthName: "",
+            level: "",
+            columns: [],
+            texts: "济南市历下区",
+            code: "370102",
+            loading: false,
+            player: null,
+        },
+        created() {
+            this.getCropList();
+            this.getShenzhang();
+            this.getCode()
+        },
+        updated() {
+            /*  this.$nextTick(() => {
+                 console.log(this.$refs.VisibleList)
+                 this.$refs.VisibleList.scrollTop = this.active * 60;
+             }) */
+        },
+        methods: {
+            getCropList() {
+                axios.get('http://58.59.29.50:15004/shandongt/farmProductController.do?getAllFarmProduct').then((res) => {
+                    this.cropList = res.data.o.filter((item) => { return item.farmName.indexOf('大棚') == -1 });
+                    this.cropList = this.cropList.filter((item) => { return item.farmName.indexOf('山药') == -1 });
+                })
+            },
+            getCode() {
+                axios.get('./assets/shandongsheng.json').then((res) => {
+                    this.columns = res.data;
+                })
+            },
+            getShenzhang() {
+                let regionCode = 370102;
+                axios.get('http://58.59.29.50:15019/chwt-isd/data/grow/get', {
+                    params: {
+                        regionCode: regionCode
+                    }
+                }).then((res) => {
+                    this.DataList = res.data.records.grow;
+                    this.birthName = this.DataList[100000]['birthName']
+                    this.level = this.DataList[100000]['data'][0]['level']
+                })
+            },
+            routerGo(message) {
+                switch (message) {
+                    case '天气查询':
+                        window.location.href = "./chwtmenu/html/weather/weatherMain.html";
+                        break;
+                    case '生长适宜度预报':
+                        window.location.href = "./Growthfitness.html" + '?num=' + this.active + '&imagePath=' + this.imagePath + '&id=' + this.id;
+                        break;
+                    case '农事活动预报':
+                        window.location.href = "./farmingActive.html" + '?num=' + this.active + '&imagePath=' + this.imagePath + '&id=' + this.id + '&cropName=' + this.cropName + '&level=' + this.level;
+                        break;
+                    case '气象灾害':
+                        window.location.href = "./weatherDisaster.html" + '?code=' + this.code;
+                        break;
+                    case '农业气象科普':
+                        window.location.href = "./knowledgeMain.html";
+                        break;
+                    case '美丽家园':
+                        window.location.href = "./crops.html";
+                        break;
+                    case '农用气象专报':
+                        window.location.href = "./chwtmenu/html/track/trackMain.html";
+                        break;
+                    case '生活指数':
+                        window.location.href = "./chwtmenu/html/lifeindex/lifeindexMain.html";
+                        break;
+                    default:
+                        break;
+                }
+            },
+            SelectClick() {
+                this.dialogVisible = !this.dialogVisible;
+            },
+            BtnClick(index, imagePath, id, cropName) {
+                this.active = index;
+                this.imagePath = imagePath;
+                this.id = id;
+                this.cropName = cropName;
+                for (key in this.DataList) {
+                    if (id == key) {
+                        this.birthName = this.DataList[key]['birthName'] ? this.DataList[key]['birthName'] : this.DataList[key]['errorMsg']
+                        this.level = this.DataList[key]['data'] ? this.DataList[key]['data'][0]['level'] : this.DataList[key]['errorMsg']
+                        break;
+                    } else {
+                        this.birthName = '暂无数据';
+                        this.level = '暂无数据';
+                    }
+                }
+            },
+            // 放大
+            magnify() {
+                this.Size++;
+                this.Baifen += 9;
+                if (this.Size >= 24) {
+                    this.Size = 24
+                    this.Baifen = 100;
+                }
+            },
+            // 缩小
+            lessen() {
+                this.Size--;
+                this.Baifen -= 9;
+                if (this.Size <= 12) {
+                    this.Size = 12;
+                    this.Baifen = 0;
+                }
+            },
+            // 语音播报
+            PlayClick() {
+                var that = this;
+                this.loading = true;
+                var text = `${this.cropName}'当前处于'${this.birthName}${this.level}'生长'`;
+                axios.get('https://chuhewentian.com:15014/shandongt/speechRecognition.do?createVideoByText', {
+                    params: {
+                        content: text
+                    }
+                }).then((res) => {
+                    if (res.data.e == 1) {
+                        this.loading = false;
+                        var mp3Url = res.data.o;
+                        if (mp3Url != null) {
+                            mp3Url = "https://chuhewentian.com:15014/" + mp3Url.split('shandong/')[1]
+                            this.ishow = true;
+                            this.player = new Audio(mp3Url);
+                            this.player.play(); //播放 mp3这个音频对象
+                            this.player.addEventListener('ended', function () {
+                                that.ishow = false;
+                            })
+                        }
+                    } else {
+                        vant.Notify({ type: 'danger', message: '播放失败,无法转成语音文件' });
+                    }
+
+                })
+
+            },
+            // 播放暂停
+            PlayPause() {
+                this.loading = false;
+                this.player.pause();
+                this.player.load();
+                this.ishow = false;
+            },
+            // 位置
+            location() {
+                this.show = true;
+            },
+            confirm(texts, indexes) {
+                this.code = this.columns[0]['children'][indexes[1]]['children'][indexes[2]]['code'];
+                this.texts = texts.toString().replaceAll(',', '').substring(3);
+                this.show = false;
+            }
+
+        }
+    }).$mount('#app')
+</script>
+<style>
+    body,
+    html {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+    }
+
+    #app {
+        background-color: rgb(244, 244, 244);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        width: 100%;
+        background: #FFFFFF;
+        height: 2.75rem;
+        line-height: 2.75rem;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .mask {
+        position: absolute;
+        z-index: 999;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .var-picker__toolbar {
+        border-bottom: 1px solid #CCC;
+        border-top: 1px solid #f2eaea;
+    }
+
+    .var-picker__columns {
+        background: rgba(0, 0, 0, 0.1);
+        height: 200px !important;
+    }
+
+    .var-loading {
+        position: absolute;
+        z-index: 999;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .var-picker {
+        position: absolute;
+        bottom: 0;
+        z-index: 99;
+    }
+
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity .9s
+    }
+
+    .container {
+        background-color: rgb(244, 244, 244);
+        height: calc(100% - 6.875rem);
+        overflow: auto;
+        position: relative;
+    }
+
+    .Bg_header {
+        background: url('./assets/bg.png');
+        background-size: cover;
+        height: 13.75rem;
+        position: relative;
+    }
+
+    .Bg_header .Bg_position {
+        position: absolute;
+        top: .625rem;
+        left: .625rem;
+        height: 2rem;
+        background: #FFFFFF;
+        border-radius: 1.0625rem;
+    }
+
+    .Bg_header .Bg_position img {
+        position: relative;
+        top: 50%;
+        margin: 0 0 0 0.625rem;
+        transform: translateY(-50%);
+    }
+
+    .Bg_header .Bg_position span {
+        font-size: 0.875rem;
+        display: inline-block;
+        position: relative;
+        top: 50%;
+        transform: translateY(-100%);
+    }
+
+    .Bg_Play {
+        width: 2.3125rem;
+        height: 2rem;
+        position: absolute;
+        top: 20%;
+        left: 40%;
+    }
+
+    .Bg_Select {
+        height: 4rem;
+        width: 3.75rem;
+        position: absolute;
+        top: 1.25rem;
+        right: 3.25rem;
+    }
+
+    .Bg_Select .nthtwo {
+        position: absolute;
+        top: 1.875rem;
+        right: -2.8715rem;
+        width: 1.5625rem;
+        height: 1.25rem;
+    }
+
+    .Bg_Select .VisibleList {
+        background: #FFF;
+        overflow-y: auto;
+        height: 28.125rem;
+        text-align: center;
+        width: 6rem;
+        z-index: 2;
+        border: 0.0625rem solid #f3f2f2;
+        border-radius: 0.5rem;
+        position: absolute;
+        top: 8.125rem;
+    }
+
+    .Bg_info {
+        height: 4rem;
+        position: absolute;
+        top: 5.625rem;
+        right: 2.25rem;
+        color: #FFF;
+        font-size: 0.875rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .Bg_info span {
+        padding: 0 10px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .Bg_info span:nth-child(2) {
+        margin-top: .1875rem;
+    }
+
+    .active {
+        background: linear-gradient(180deg, #76C0F9 0%, #5992EC 100%);
+        border-radius: .5rem;
+        margin: .3125rem;
+    }
+
+    .Bg_body {
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        flex-wrap: wrap;
+        top: 9.75rem;
+        position: absolute;
+        width: calc(100% - 1.25rem);
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        border-radius: 0.5rem;
+    }
+
+    .item {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        height: 7rem;
+    }
+
+    .item img {
+        margin-top: 0.3125rem;
+    }
+
+    .footer {
+        width: 100%;
+        height: 4.125rem;
+        background: #FFFFFF;
+        z-index: 1;
+        margin-top: .625rem;
+    }
+
+    .footer .center {
+        width: 21.5625rem;
+        height: 2.625rem;
+        margin: 0.75rem auto;
+        background: #FE883C;
+        border-radius: 1.3125rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .footer .center div {
+        width: 6.8125rem;
+        display: inline-block;
+        height: 100%;
+        line-height: 2.5rem;
+        font-size: 1.5rem;
+        color: #333333;
+        letter-spacing: 0;
+        font-weight: 600;
+        vertical-align: middle;
+        position: relative;
+    }
+
+    .footer .center img {
+        position: relative;
+        top: 50%;
+        margin: 0 0.625rem;
+        transform: translateY(-50%);
+        vertical-align: top;
+        width: 1.75rem;
+    }
+
+    .footer .center span {
+        width: 6.8125rem;
+        display: inline-block;
+        height: 100%;
+        line-height: 2.5rem;
+        background: #FFFFFF;
+        font-size: 1.5rem;
+        color: #333333;
+        letter-spacing: 0;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .active1 {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 1.375rem;
+        margin: auto;
+        text-align: center;
+    }
+
+    .context {
+        margin-bottom: 0.9375rem;
+        text-align: center;
+    }
+</style>

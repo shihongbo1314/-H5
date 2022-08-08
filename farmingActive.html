@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--清理缓存  -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/style/index.css" />
+</head>
+
+<body>
+    <div id="app">
+        <template>
+            <div class="header"
+                :class="{'color':suitable == '3','colortwo':suitable == '2','colorone':suitable == '1'}">
+                <img src="./assets/zuojiantou01.png" @click="this.window.location.href = './prefecture.html'">
+                <span>农事活动预报</span>
+            </div>
+            <div class="container"
+                :class="{'color':suitable == '3','colortwo':suitable == '2','colorone':suitable == '1'}">
+                <div class="header_top">
+                    <div v-for="item,index in timeBoxs" :key="index" class="box" @click="BtnClick(index,item.str)"
+                        :class="active == index ? 'active':''">
+                        <div>{{item.day}}</div>
+                        <div>{{item.time}}</div>
+                    </div>
+                </div>
+                <div class="header_body">
+                    <div class="header_body_header">
+                        <img src="./assets/penyao.png">
+                        <img src="./assets/guangai.png">
+                        <img src="./assets/shifei.png">
+                    </div>
+                    <van-tabs v-model="activeName" @change="changeName">
+                        <van-tab title="喷药" name="spraying"></van-tab>
+                        <van-tab title="灌溉" name="irrigation"></van-tab>
+                        <van-tab title="施肥" name="fertilization"></van-tab>
+                    </van-tabs>
+                    <div class="header_body_footer">
+                        <div style="text-align:center;padding:10px 0;">
+                            <img :src="suitable | suitableImg" style="width: 24px;
+                        height: 24px;
+                        vertical-align: sub;">
+                            <span style="color:#FFF;font-size: 24px;">{{suitable |suitableFun}}</span>
+
+                        </div>
+                        <div style="text-align:left;margin: 0 auto;padding: 0 20px;padding-bottom: 10px;overflow-y: auto;height: calc(100% - 70px);">
+                            <span style="color:#FFF;font-size: 12px;">【温度范围】{{tem_min}}～{{tem_max}}
+                            </span><br>
+
+                            <span style="color:#FFF;font-size: 12px;">【未来24小时日平均气温】{{temp}}</span><br>
+                            <span style="color:#FFF;font-size: 12px;">【风向风力】{{fengxiang}}{{fenglishuxing}}</span><br>
+                            <span
+                                style="color:#FFF;font-size: 12px;">【未来24小时降水量】{{oneDayRain}}</span><br>
+                            <span
+                                style="color:#FFF;font-size: 12px;">【未来72小时降雨量】{{threeDayRain}}</span><br>
+                            <span
+                                style="color:#FFF;font-size: 12px;">【过去48小时降水量】{{lastTwoDayRain}}</span><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="header_top">
+                    <van-row>
+                        <van-col span="6" @click="SelectClick">
+                            <img :src="this.cropName | suitableImgs" style="width:3.75rem;padding-left:10px;">
+                            <img src="./assets/arrows.png" class="nthtwo">
+                        </van-col>
+                        <div class="VisibleList" v-if="dialogVisible" ref="VisibleList">
+                            <div v-for="crop,index in cropList" :key="index"
+                                style="display: flex;flex-direction: column;box-sizing: border-box;"
+                                :class="index == activeNong ? 'activeNong':''"
+                                @click="BtnClickTwo(index,crop.imagePath,crop.id,crop.farmName)">
+                                <img :src="crop.farmName | suitableImgs" style="width: 2.75rem;margin: auto;">
+                                <span style="font-size:0.75rem;">{{crop.farmName}}</span>
+                            </div>
+                        </div>
+                        <van-col span="8" offset="1">
+                            <span>作物名称</span>
+                            <span>{{cropName}}</span>
+                        </van-col>
+                        <van-col span="8">
+                            <span>生育阶段</span>
+                            <span>{{level}}</span>
+                        </van-col>
+                    </van-row>
+                </div>
+                <div class="header_bottom">
+                    <div class="header_footer_first">
+                        <span class="title">农事活动适宜度说明</span>
+                        <img src="./assets/yuyinpng.png" style="margin-left:10px;width: 1.5rem;" @click="PlayClickone">
+                    </div>
+                    <div class="header_footer_second" style="min-height:72px">
+                        <span style="line-height: 24px;">{{spraying_Indicator}}</span>
+                    </div>
+                    <div class="header_footer_first" style="padding-top: 0">
+                        <span class="title">未来七天总体适宜度建议</span>
+                        <img src="./assets/yuyinpng.png" style="margin-left:10px;width: 1.5rem;" @click="PlayClicktwo">
+                    </div>
+                    <div class="header_footer_second" style="min-height:84px;height: calc(100% - 150px);">
+                        <span style="line-height: 24px;">{{SevenForecast }}</span>
+                    </div>
+                </div>
+                <!--制作单位  -->
+                <div class="producerDiv">
+                    <p class="company">山东省气象服务中心制作</p>
+                    <p class="more">更多信息下载锄禾问天APP</p>
+                </div>
+                <!--制作单位  end-->
+            </div>
+        </template>
+    </div>
+</body>
+
+</html>
+<script src="./utils/vue.js"></script>
+<script src="./utils/vant.js"></script>
+<script src="./utils/axios.js"></script>
+<script src="./utils/index.js"></script>
+<script src="./utils/weather.js"></script>
+<script>
+    Vue.use(vant.Lazyload);
+    new Vue({
+        el: '#app',
+        filters: {
+            suitableFun(val) {
+                switch (val) {
+                    case '3':
+                        return '不适宜'
+                        break;
+                    case '2':
+                        return '较适宜'
+                        break;
+                    case '1':
+                        return '适宜'
+                        break;
+                    default:
+                        break;
+                }
+            },
+            suitableImg(val) {
+                switch (val) {
+                    case '3':
+                        return './assets/bushiyi.png'
+                        break;
+                    case '2':
+                        return './assets/jiaoshiyi.png'
+                        break;
+                    case '1':
+                        return './assets/shiyi.png'
+                        break;
+                    default:
+                        break;
+                }
+            },
+            suitableImgs(val) {
+                switch (val) {
+                    case '苹果':
+                        return './assets/zuowu/苹果.png'
+                        break;
+                    case '樱桃':
+                        return './assets/zuowu/樱桃.png'
+                        break;
+                    case '姜':
+                        return './assets/zuowu/姜.png'
+                        break;
+                    case '大豆':
+                        return './assets/zuowu/大豆.png'
+                        break;
+                    case '小麦':
+                        return './assets/zuowu/小麦.png'
+                        break;
+                    case '棉花':
+                        return './assets/zuowu/棉花.png'
+                        break;
+                    case '玉米':
+                        return './assets/zuowu/玉米.png'
+                        break;
+                    case '花生':
+                        return './assets/zuowu/花生.png'
+                        break;
+                    case '日照绿茶':
+                        return './assets/zuowu/日照绿茶.png'
+                        break;
+                    case '酿酒葡萄':
+                        return './assets/zuowu/酿酒葡萄.png'
+                        break;
+                    case '青萝卜':
+                        return './assets/zuowu/青萝卜.png'
+                        break;
+                    case '石榴':
+                        return './assets/zuowu/石榴.png'
+                        break;
+                    case '红杏':
+                        return './assets/zuowu/红杏.png'
+                        break;
+                    case '黄烟':
+                        return './assets/zuowu/黄烟.png'
+                        break;
+                    case '山药':
+                        return './assets/zuowu/山药.png'
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+        data: {
+            timeBoxs: [
+                { day: '今天', time: '', str: '' },
+                { day: '明天', time: '', str: '' },
+                { day: '', time: '', str: '' },
+                { day: '', time: '', str: '' },
+                { day: '', time: '', str: '' },
+                { day: '', time: '', str: '' },
+                { day: '', time: '', str: '' },
+            ],
+            active: 0,
+            str: parseTime(new Date(), 'yyyyMMdd'),
+            activeNong: 0,
+            activeName: 'spraying',
+            SevenForecast: "",
+            DataList: {},
+            forecastData: [],
+            timeDateList: [],
+            suitable: "",
+            cropList: [],
+            dialogVisible: false,
+            cropName: "苹果",
+            level: "",
+            tem_max: "",
+            tem_min: "",
+            temp:"",
+            oneDayRain:"",
+            threeDayRain:"",
+            lastTwoDayRain:"",
+            spraying_Indicator: '',
+            fengxiang: "",
+            fengli: "",
+            fengli1: ""
+        },
+        created() {
+            this.getDataList();
+            this.getCropList()
+            for (let index = 0; index < 7; index++) {
+                this.timeBoxs[index].time = FungetdateTime(index).split('/')[0] + '日'
+                /*  this.timeBoxs[index].str = FungetdateTimeDay(index) */
+                this.timeBoxs[index].str = FungetdateTimeDay(index).substring(0, 4) + '-' + FungetdateTimeDay(index).substring(4, 6) + '-' + FungetdateTimeDay(index).substring(6, 8)
+                if (index > 1) {
+                    this.timeBoxs[index].day = getDates(0, this.timeBoxs[index].str)[0]['week']
+                }
+            }
+        },
+        computed: {
+            fenglishuxing() {
+                if (this.fengli == this.fengli1) {
+                    return this.fengli;
+                } else {
+                    return this.fengli + '~' + this.fengli1;
+                }
+            }
+        },
+        methods: {
+            getDataList() {
+                let regionCode = 370102;
+                axios.get('http://58.59.29.50:15019/chwt-isd/data/activities/get', {
+                    params: {
+                        regionCode: regionCode
+                    }
+                }).then((res) => {
+                    console.log(res)
+                    // 默认数据
+                    this.SevenForecast = res.data.records.activity['spraying-total'].proposal
+                    this.timeDateList = res.data.records.activity['spraying']
+                    this.suitable = res.data.records.activity['spraying'][0][parseTime(new Date(), 'yyyyMMdd')]['level']
+                    this.spraying_Indicator = res.data.records.activity['spraying'][0][parseTime(new Date(), 'yyyyMMdd')]['content']
+                    this.DataList = res.data.records.activity;
+                    this.forecastData = res.data.records.forecastData;
+                    this.tem_min = res.data.records.forecastData[0]['tem_min'].toFixed(0) + '°';
+                    this.tem_max = res.data.records.forecastData[0]['tem_max'].toFixed(0) + '°';
+                    this.temp = res.data.records.forecastData[0]['temp'].toFixed(0) + '°';
+                    this.oneDayRain = res.data.records.forecastData[0]['rain'].toFixed(0) + 'mm';
+                    this.threeDayRain = res.data.records.forecastData[0]['threeDayRain'].toFixed(0) + 'mm';
+                    this.lastTwoDayRain = res.data.records.forecastData[0]['lastTwoDayRain'].toFixed(0) + 'mm';
+                    this.fengxiang = GetWindDirTxt(res.data.records.forecastData[0]['win_s'].toFixed(0))
+                    this.fengli = fsTurnTofj(res.data.records.forecastData[0]['win_s'].toFixed(0))
+                    this.fengli1 = fsTurnTofj(res.data.records.forecastData[0]['win_s_max'].toFixed(0))
+                    var url = location.search;
+                    if (url.split("=")[1]) {
+                        let urlNum = url.split("=")[1].split('&')[0];
+                        let imaPath = url.split("&")[1].split('=')[1];
+                        let id = url.split("id")[1].split('=')[1];
+                        let cropName = decodeURI(url.split("cropName")[1].split('=')[1].split('&')[0]);
+                        this.level = decodeURI(url.split("level")[1].split('=')[1]);
+                        this.BtnClickTwo(urlNum, imaPath, id, cropName)
+                    }
+
+                })
+            },
+            getCropList() {
+                axios.get('http://58.59.29.50:15004/shandongt/farmProductController.do?getAllFarmProduct').then((res) => {
+                    this.cropList = res.data.o.filter((item) => { return item.farmName.indexOf('大棚') == -1 });
+                    this.cropList = this.cropList.filter((item) => { return item.farmName.indexOf('山药') == -1 });
+                })
+            },
+            BtnClick(index, str) {
+                this.active = index;
+                this.str = str.replaceAll('-', '');
+                this.suitable = this.timeDateList[index][this.str]['level'];
+                this.spraying_Indicator = this.timeDateList[index][this.str]['content'];
+                this.forecastData.map((item) => {
+                    if (item.date == this.str) {
+                        this.tem_min = item['tem_min'].toFixed(0) + '°';
+                        this.tem_max = item['tem_max'].toFixed(0) + '°';
+                        this.fengxiang = GetWindDirTxt(item['win_s'].toFixed(0))
+                        this.fengli = fsTurnTofj(item['win_s'].toFixed(0))
+                        this.fengli1 = fsTurnTofj(item['win_s_max'].toFixed(0))
+                    }
+                })
+            },
+
+            // 语音播报
+            PlayClickone() {
+                var text = `${this.spraying_Indicator}`;
+                axios.get('https://chuhewentian.com:15014/shandongt/speechRecognition.do?createVideoByText', {
+                    params: {
+                        content: text
+                    }
+                }).then((res) => {
+                    var mp3Url = res.data.o;
+                    if (mp3Url != null) {
+                        mp3Url = "https://chuhewentian.com:15014/" + mp3Url.split('shandong/')[1]
+                        var player = new Audio(mp3Url);
+                        player.play(); //播放 mp3这个音频对象
+                        player.addEventListener('ended', function () {
+                            this.ishow = false;
+                        })
+                    }
+                })
+            },
+            // 语音播报
+            PlayClicktwo() {
+                var text = `${this.SevenForecast}`;
+                axios.get('https://chuhewentian.com:15014/shandongt/speechRecognition.do?createVideoByText', {
+                    params: {
+                        content: text
+                    }
+                }).then((res) => {
+                    var mp3Url = res.data.o;
+                    if (mp3Url != null) {
+                        mp3Url = "https://chuhewentian.com:15014/" + mp3Url.split('shandong/')[1]
+                        var player = new Audio(mp3Url);
+                        player.play(); //播放 mp3这个音频对象
+                        player.addEventListener('ended', function () {
+                            this.ishow = false;
+                        })
+                    }
+                })
+            },
+            changeName() {
+                switch (this.activeName) {
+                    case 'spraying':
+                        this.SevenForecast = this.DataList['spraying-total'].proposal
+                        this.timeDateList = this.DataList['spraying']
+                        this.suitable = this.timeDateList[this.active][this.str]['level']
+                        console.log(this.timeDateList[this.active][this.str])
+                        this.spraying_Indicator = this.timeDateList[this.active][this.str]['content']
+                        break;
+                    case 'irrigation':
+                        this.SevenForecast = this.DataList['irrigation-total'].proposal
+                        this.timeDateList = this.DataList['irrigation']
+                        this.suitable = this.timeDateList[this.active][this.str]['level']
+                        this.spraying_Indicator = this.timeDateList[this.active][this.str]['content']
+                        break;
+                        break;
+                    case 'fertilization':
+                        this.SevenForecast = this.DataList['fertilization-total'].proposal
+                        this.timeDateList = this.DataList['fertilization']
+                        this.suitable = this.timeDateList[this.active][this.str]['level']
+                        this.spraying_Indicator = this.timeDateList[this.active][this.str]['content']
+                        break;
+                    default:
+                        break;
+                }
+            },
+            SelectClick() {
+                this.dialogVisible = !this.dialogVisible;
+            },
+            // 农作物选择确定
+            BtnClickTwo(index, imagePath, id, cropName) {
+                this.activeNong = index;
+                this.imagePath = imagePath;
+                this.id = id;
+                this.dialogVisible = false;
+                this.cropName = cropName;
+            },
+        }
+    }).$mount('#app')
+</script>
+<style>
+    body,
+    html {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+    }
+
+    .activeNong {
+        background: linear-gradient(180deg, #76C0F9 0%, #5992EC 100%);
+        border-radius: .5rem;
+        margin: .3125rem;
+    }
+
+    #app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(244, 244, 244);
+    }
+
+    .header {
+        height: 2.75rem;
+        text-align: center;
+        line-height: 2.75rem;
+        position: relative;
+        color: #FFF;
+    }
+
+    /* 底部制作单位 */
+    .producerDiv {
+        width: calc(100% - 1.25rem);
+        margin-top: 15px;
+        background: #ffffff;
+        padding: 5px;
+        padding-bottom: 15px;
+    }
+
+    .producerDiv p {
+        margin-bottom: 0;
+        text-align: center;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #666666;
+        letter-spacing: 0;
+        font-weight: 400;
+    }
+
+    .producerDiv .more {
+        margin-top: 2px;
+        text-align: center;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #666666;
+        letter-spacing: 0;
+        font-weight: 400;
+    }
+
+    .color {
+        background: #CE4E4D !important;
+    }
+
+    .colorone {
+        background: #23A564 !important;
+    }
+
+    .colortwo {
+        background: #C68E35 !important;
+    }
+
+    .header img {
+        width: 22px;
+        height: 22px;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .container {
+        border-radius: 0 0 14.375rem 14.375rem /5rem;
+        height: 50%;
+    }
+
+    .container .header_top {
+        display: flex;
+        justify-content: space-evenly;
+        color: #FFF;
+        height: 3.25rem;
+        width: calc(100% - 1.25rem);
+        margin: .625rem auto;
+        text-align: center;
+    }
+
+    .VisibleList {
+        background: #FFF;
+        overflow-y: auto;
+        height: calc(100% - 5.625rem);
+        text-align: center;
+        width: 6rem;
+        z-index: 2;
+        border: 0.0625rem solid #f3f2f2;
+        border-radius: 0.5rem;
+        position: absolute;
+        top: 80px;
+    }
+
+    .container .header_top .box {
+        background: rgba(255, 255, 255, 0.10);
+        border-radius: .25rem;
+        font-size: .75rem;
+        flex: 1;
+        margin-right: .125rem;
+        border-top: .25rem solid transparent;
+    }
+
+    .container .header_body {
+        height: calc(100% - 4.5rem);
+    }
+
+    .container .header_body .header_body_header {
+        display: flex;
+        margin: 0 auto;
+        justify-content: space-around;
+        margin-top: 1.25rem;
+    }
+
+    .container .header_body .header_body_header img {
+        height: 2rem;
+        width: 2rem;
+    }
+
+    .container .header_body .header_body_footer {
+        width: calc(100% - 1.25rem);
+        margin: .625rem auto;
+        height: calc(100% - 165px);
+        min-height: 97px;
+        /* 80 */
+        background: rgba(255, 255, 255, 0.10);
+        border-radius: .5rem;
+    }
+
+    .container .header_top .box div {
+        margin-top: .3125rem;
+    }
+
+    .van-tabs__nav {
+        background-color: transparent;
+    }
+
+    .van-tab {
+        color: rgba(244, 244, 244, 0.8);
+        font-size: 1rem;
+    }
+
+    .van-tab--active {
+        color: #FFF;
+    }
+
+    .van-tabs__line {
+        background-color: #FFF;
+    }
+
+    .footer {
+        width: calc(100% - 1.25rem);
+        margin: 0 auto;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 48%;
+        height: 50%;
+    }
+
+    .footer .header_top {
+        background: #FFFFFF;
+        margin: 0 auto;
+        border-radius: .5rem;
+    }
+
+    .footer .header_bottom .header_footer_first {
+        width: calc(100% - 1.25rem);
+        margin: .3125rem auto;
+        padding-top: .3125rem;
+    }
+
+    .footer .header_bottom .header_footer_second {
+        width: calc(100% - 1.25rem);
+        margin: .3125rem auto;
+        background: rgba(237, 241, 250, 0.50);
+        border-radius: .25rem;
+    }
+
+    .footer .header_bottom .header_footer_second span {
+        padding: .625rem;
+        font-size: .9375rem;
+        display: inline-block;
+        max-height: 3.75rem;
+        overflow-y: auto;
+    }
+
+    .footer .header_bottom .header_footer_first .title {
+        text-align: center;
+        display: inline-block;
+        background: #1777FF;
+        color: #FFF;
+        width: 60%;
+        font-size: .9375rem;
+        border-radius: 1.25rem .125rem;
+    }
+
+    .footer .header_bottom img {
+        vertical-align: bottom;
+    }
+
+    .van-row {
+        text-align: center;
+        min-height: 5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .van-col {
+        position: relative;
+    }
+
+    .van-col span:nth-child(1) {
+        height: 20px;
+        line-height: 20px;
+        color: #41588A;
+        font-size: 12px;
+        width: calc(100% - 10px);
+        margin: 10px auto;
+        background: #EDF1FA;
+        display: block;
+        border-radius: 2px;
+    }
+
+    .van-col span:nth-child(2) {
+        height: 20px;
+        line-height: 20px;
+        width: calc(100% - 10px);
+        margin: auto;
+        display: block;
+        font-size: 16px;
+    }
+
+    .nthtwo {
+        position: absolute;
+        top: 5px;
+        height: 20px;
+        left: 70px;
+        transform: rotate(90deg);
+    }
+
+    .header_bottom {
+        height: calc(100% - 90px);
+        margin-top: 10px;
+        background: #FFFFFF;
+        border-radius: .5rem;
+    }
+
+    .active {
+        border: .0625rem solid rgba(255, 255, 255, 1) !important;
+        border-radius: .25rem;
+        border-top: .25rem solid rgba(255, 255, 255, 1) !important;
+    }
+</style>

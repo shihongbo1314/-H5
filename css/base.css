@@ -1,0 +1,401 @@
+@charset "utf-8";
+:root{
+	--mainColor:#497ee9;
+	--mainColorOpacity:#497ee94d;
+	--blue:#497ee9;
+	--black:#000;
+	--green:#27BC27;
+}
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	/* 禁止选中 */
+	-moz-user-select: none; /*火狐*/
+	-webkit-user-select: none; /*webkit浏览器*/
+	-ms-user-select: none; /*IE10*/
+	-khtml-user-select: none; /*早期浏览器*/
+	user-select: none;
+}
+body .tooltip-inner{
+	font-size:12px !important;
+}
+
+.background{
+	/*background-image: url(../dataFile/image/base/bj2.jpg);
+	background-color: #000;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	background-size: cover;*/
+	background-image:radial-gradient(60% 80% at 50% 50%,var(--mainColor),black);
+    transition:background-image .3s;
+}
+
+.fontSize16 {
+	font-size: 16px;
+}
+
+.fontSize18 {
+	font-size: 18px;
+}
+
+.fontSize20 {
+	font-size: 20px;
+}
+.fontSize16 .leaflet-pane{
+	font-size: 16px;
+}
+.fontSize18 .leaflet-pane{
+	font-size: 18px;
+}
+.fontSize20 .leaflet-pane{
+	font-size: 20px;
+}
+
+* {
+	font-family: "微软雅黑";
+	margin: 0;
+	padding: 0;
+	outline:none;
+}
+
+/* 谷歌内核滚动条样式 */
+::-webkit-scrollbar-thumb {
+	background: rgba(150,150,150, 0.4);
+	border-radius: 99px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(150, 150, 150, 0.2);
+}
+
+::-webkit-scrollbar {
+	background: rgba(150, 150, 150, 0);
+	width: 5px;
+	height: 10px;
+}
+
+ul, li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+a {
+	display: inline-block;
+	text-decoration: none;
+	color: #fff;
+}
+
+img {
+	vertical-align: middle;
+}
+
+.imgload {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.3);
+	z-index: 9999999;
+}
+
+.imgload .fa {
+	font-size: 30px;
+	transform: translateY(-50%);
+	position: absolute;
+	top: 50%;
+}
+.loadEffect{
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%,-50%);
+	position: absolute;
+	top: 50%;
+	left:50%;
+}
+.loadEffect span{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background:#fff;
+    position: absolute;
+    -webkit-animation: load 1.04s ease infinite;
+}
+@-webkit-keyframes load{
+    0%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0.2;
+    }
+}
+.loadEffect span:nth-child(1){
+    left: 0;
+    top: 50%;
+    margin-top:-8px;
+    -webkit-animation-delay:0.13s;
+}
+.loadEffect span:nth-child(2){
+    left: 14px;
+    top: 14px;
+    -webkit-animation-delay:0.26s;
+}
+.loadEffect span:nth-child(3){
+    left: 50%;
+    top: 0;
+    margin-left: -8px;
+    -webkit-animation-delay:0.39s;
+}
+.loadEffect span:nth-child(4){
+    top: 14px;
+    right:14px;
+    -webkit-animation-delay:0.52s;
+}
+.loadEffect span:nth-child(5){
+    right: 0;
+    top: 50%;
+    margin-top:-8px;
+    -webkit-animation-delay:0.65s;
+}
+.loadEffect span:nth-child(6){
+    right: 14px;
+    bottom:14px;
+    -webkit-animation-delay:0.78s;
+}
+.loadEffect span:nth-child(7){
+    bottom: 0;
+    left: 50%;
+    margin-left: -8px;
+    -webkit-animation-delay:0.91s;
+}
+.loadEffect span:nth-child(8){
+    bottom: 14px;
+    left: 14px;
+    -webkit-animation-delay:1.04s;
+}
+.input_text{
+	background: none;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	padding: 5px 10px;
+	color: #fff;
+	width: 200px;
+}
+.input_text option{
+	background: #fff;
+	color: #000;
+}
+
+.input_checkbox {
+    padding: 5px 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: #fff;
+    color: #000;
+    box-shadow: 1px 1px 5px -1px #000;
+    display: inline-block;
+    text-align: left;
+    cursor: pointer;
+}
+
+.input_checkbox>*, .input_checkbox>input[type=checkbox], .input_checkbox>input[type=radio] {
+    vertical-align: middle;
+    margin: 0 2px;
+}
+
+ul.box_info_btn_ul>li, ul.box_info_btnCheck_ul>li {
+    display: inline-block;
+    min-width: 66px;
+    padding: 2px 10px;
+    text-align: center;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    box-sizing: border-box;
+    margin: 10px;
+    cursor: pointer;
+}
+.datetimepicker table{
+	color: #000;
+}
+
+.disabled{
+	cursor: no-drop;
+}
+
+.rotate {
+    animation-name: rotate;
+    animation-iteration-count: infinite;
+    animation-duration: 1.5s;
+    animation-delay: 0s;
+}
+@keyframes rotate{
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.DangerPoint{
+	z-index: 10 !important;
+}
+.chooseBtn {
+    display: none;
+}
+.choose-label {
+    box-shadow: #ccc 0px 0px 0px 1px;
+    width: 40px;
+    height: 20px;
+    display: inline-block;
+    border-radius: 20px;
+    position: relative;
+    background-color: #bdbdbd;
+    overflow: hidden;
+    top: 10px;
+    cursor: pointer;
+    margin: -9px 0 7px;
+}
+.choose-label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border-radius: 20px;
+    background-color: #fff;
+    z-index: 20;
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.chooseBtn:checked+label.choose-label:before {
+    left: 20px;
+}
+.chooseBtn:checked+label.choose-label {
+    background-color: #51ccee;
+}
+/*树形结构*/
+.tree_div ul.tree_ul {
+    padding-left:30px;
+}
+.tree_div>ul.tree_ul {
+    padding-left: 0;
+    text-align: left;
+}
+.tree_div li.tree_li {
+    margin: 2px;
+}
+.tree_div p.tree_li_btn {
+    cursor: pointer;
+    padding: 5px;
+    margin: 0;
+    word-wrap: break-word;
+}
+.tree_div li.tree_li.click>p.tree_li_btn {
+    background: rgba(255, 255, 255, 0.4);
+}
+.tree_div .treeCheckbox {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    margin: 2px 5px;
+    background: #fff;
+    display: inline-block;
+    vertical-align: middle;
+}
+.tree_div .treeCheckbox:after {
+    content: '';
+    width: 7px;
+    height: 4px;
+    border: 1px solid #333;
+    border-top: none;
+    border-right: none;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    opacity: 0;
+}
+.tree_div .tree_li.click>.tree_li_btn>label:after {
+    opacity: 1;
+}
+.tree_div .tree_treeName {
+    margin-left: 5px;
+}
+/*----------------mui.showLoading---------------*/  
+.mui-show-loading {  
+    position: fixed;  
+    padding: 5px;  
+    width: 120px;  
+    min-height: 120px;  
+    top: 45%;  
+    left: 50%;  
+    margin-left: -60px;  
+    background: rgba(0, 0, 0, 0.6);  
+    text-align: center;  
+    border-radius: 5px;  
+    color: #FFFFFF;  
+    visibility: hidden;  
+    margin: 0;  
+    z-index: 2000;  
+ 
+    -webkit-transition-duration: .2s;  
+    transition-duration: .2s;  
+    opacity: 0;  
+    -webkit-transform: scale(0.9) translate(-50%, -50%);  
+    transform: scale(0.9) translate(-50%, -50%);  
+    -webkit-transform-origin: 0 0;  
+    transform-origin: 0 0;  
+}  
+.mui-show-loading.loading-visible {  
+    opacity: 1;  
+    visibility: visible;  
+    -webkit-transform: scale(1) translate(-50%, -50%);  
+    transform: scale(1) translate(-50%, -50%);  
+}  
+.mui-show-loading .mui-spinner{  
+    margin-top: 24px;  
+    width: 36px;  
+    height: 36px;  
+    background-color: url('../../../img/predicion/forecast-des-bg.png') no-repeat;
+}  
+.mui-show-loading .text {  
+    line-height: 1.6;  
+    font-family: -apple-system-font,"Helvetica Neue",sans-serif;  
+    font-size: 14px;  
+    margin: 10px 0 0;  
+    color: #fff;  
+    right: 25px;
+    top: 65px;
+    width: auto;
+}  
+ 
+.mui-show-loading-mask {  
+  position: fixed;  
+  z-index: 1000;  
+  top: 0;  
+  right: 0;  
+  left: 0;  
+  bottom: 0; 
+  background:rgba(0,0,0,0.4);
+}  
+.mui-show-loading-mask-hidden{  
+    display: none !important;  
+}

@@ -1,0 +1,308 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>锄禾问天</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<meta http-equiv="cache-control" content="no-cache">
+<meta name="google-site-verification"
+	content="FTeR0c8arOPKh8c5DYh_9uu98_zJbaWw53J-Sch9MTg">
+<link href="../../plugins/mui/css/mui.css" rel="stylesheet" />
+<!-- bootstrap -->
+<link href="../../plugins/bootstrap/css/bootstrap.min.css"
+	rel="stylesheet" media="screen">
+<link
+	href="../../plugins/bootstrap/css/bootstrap-datetimepicker.min.css"
+	rel="stylesheet" media="screen">
+
+<!-- leaflet地图 -->
+<link rel="stylesheet" type="text/css"
+	href="../../plugins/leaflet1.3/leaflet.css">
+<!-- 自己写的 -->
+<link href="../../css/loading.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="../../css/base.css">
+<link rel="stylesheet" type="text/css" href="css/radarMain.css">
+
+
+<style type="text/css">
+body {
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	color: white;
+	font-family: PingFangSC-Semibold !important;
+}
+
+div#map {
+	width: 100%;
+	height: calc(100% - 20px);
+}
+
+div#leidaConfig {
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	opacity: 1;
+	-webkit-transition: opacity 0.5s;
+	transition: opacity 0.5s;
+	display: none;
+}
+
+body:hover div#leidaConfig {
+	opacity: 1;
+}
+
+div#leidaConfig ul {
+	width: calc(100% - 50px);
+	height: 26px;
+	float: right;
+	border: 1px solid #fff;
+	text-align: center;
+}
+
+div#leidaConfig ul li {
+	padding-top: 4px;
+	font-size: 12px;
+}
+
+div#leidaConfig .button {
+	background: #2196F3;
+	padding: 0 8px;
+	border-radius: 5px;
+	cursor: pointer;
+	float: left;
+	color: white;
+	height: 26px;
+	line-height: 26px;
+}
+
+div#leidaConfig>* {
+	vertical-align: middle;
+}
+
+div#leidaConfig .button.click {
+	background: #2196F3;
+}
+
+div#leidaConfig ul li {
+	height: 100%;
+	float: left;
+	background: rgba(0, 191, 255, 0.6);
+	border-right: 1px solid #fff;
+	cursor: pointer;
+}
+
+div#leidaConfig ul li:last-child {
+	border: none;
+}
+
+div#leidaConfig ul li.click {
+	background: #2196F3;
+}
+
+div#leidaTime {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	z-index: 1000;
+	background: rgba(0, 0, 0, 0.4);
+	padding: 5px 10px;
+	border-radius: 5px;
+	display: none;
+}
+
+.leaflet-top .leaflet-control {
+	margin-top: 5px;
+}
+
+.leaflet-left .leaflet-control {
+	margin-left: 5px;
+}
+
+.leaflet-touch .leaflet-bar a {
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+}
+
+.legendDiv {
+	padding: 6px 0;
+}
+
+.legend-box {
+	position: absolute;
+	z-index: 1000;
+	right: 5;
+	bottom: 30px;
+	background: rgba(0, 0, 0, 0.4);
+	border-radius: 5px;
+	padding: 5;
+	text-align: center;
+	align-items: center;
+}
+
+.legend-box .legendcolor {
+	width: 15px;
+	height: 8px;
+	float: left;
+}
+
+.legend-box .legendvalue {
+	margin-left: 3px;
+	font-size: 10px;
+	line-height: 8px;
+	float: left;
+}
+</style>
+</head>
+<body>
+
+
+	<!--顶部标题  -->
+	<header class="mui-bar mui-bar-nav">
+		<a href="javascript:history.back(-1)"
+			class="mui-icon mui-icon-back mui-pull-left"></a>
+		<h1 class="mui-title">雷达图</h1>
+	</header>
+	<!--顶部标题  end-->
+
+
+	<!-- 主页面容器 -->
+	<div class="mui-content">
+		<!--详细地址  -->
+		<div class="showAddress">
+			<img class="mui-pull-left" src="image/location.png">
+			<div class="label-address" id="nowAddress"></div>
+		</div>
+
+		<!--未来60分钟降水预测  -->
+		<div class="rainfallForecast">
+			<div class="title">未来60分钟降水预测</div>
+			<div class="desc">&nbsp;</div>
+
+			<div id="hour_rain">
+				<div class="times">
+					<span class="time"> <span class="text">10分钟</span>
+					</span> <span class="time"></span> <span class="time"> <span
+						class="text">30分钟</span>
+					</span> <span class="time"></span> <span class="time"> <span
+						class="text">60分钟</span>
+					</span> <span class="time last"></span>
+				</div>
+				<canvas id="rain_line" width="400" height="100"
+					style="width: 400px; height: 100px;"></canvas>
+
+				<div class="level_c">
+					<div class="leve_1">
+						<span>大<i class="type_flag">雨</i></span>
+					</div>
+					<div class="leve_1">
+						<span>中<i class="type_flag">雨</i></span>
+					</div>
+					<div class="leve_1">
+						<span>小<i class="type_flag">雨</i></span>
+					</div>
+				</div>
+				<ul class="tuli">
+					<li><span class="rain_no"></span>无雨</li>
+					<li><span class="rain_small"></span>小雨</li>
+					<li><span class="rain_middle"></span>中雨</li>
+					<li><span class="rain_big"></span>大雨</li>
+				</ul>
+			</div>
+
+		</div>
+
+
+		<!--雷达图  -->
+		<div class="redar-box">
+			<div class="redar-content">
+				<div id="map">
+					<!-- 控制区域 -->
+					<div id="leidaConfig">
+						<select class="speed" onchange="leidatuConsole.playChange()"
+							style="display: none;">
+							<option value="0.5">0.5秒</option>
+							<option value="1" selected="selected">1秒</option>
+							<option value="2">2秒</option>
+						</select> <span class="button" onclick="leidatuConsole.play(this)">播放</span>
+						<ul class="times"></ul>
+					</div>
+					<!-- 当前显示的雷达时间 -->
+					<div id="leidaTime" style="display: none;"></div>
+					<!-- 控制按钮 -->
+					<div id="controlBtn1">
+						<label class="imgBtn1 active"></label>
+					</div>
+					<!--  图例-->
+					<div class="legend-box" id="legend" style="display: none;">
+						<div>雷达图</div>
+						<div>dBZ</div>
+						<div id="legendList"></div>
+
+					</div>
+
+
+				</div>
+			</div>
+
+		</div>
+		
+		<!--制作单位  -->
+		<div class="producerDiv">
+			<p class="company">山东省气象服务中心制作</p>
+			<p class="more">更多信息下载锄禾问天APP</p> 
+		</div>
+		<!--制作单位  end-->
+	</div>
+
+
+
+	<!-- jquery -->
+	<script src="../../plugins/jQuery/jquery 1.9.min.js"></script>
+	<!-- 插件JS -->
+	<script src="../../plugins/mui/js/mui.min.js"></script>
+	<!-- leaflet地图 -->
+	<script type="text/javascript"
+		src="../../plugins/leaflet1.3/leaflet.js"></script>
+	<script type="text/javascript"
+		src="../../plugins/leaflet1.3/wind/wind-js-leaflet.js"></script>
+	<!-- gsonJson地图 -->
+	<script type="text/javascript"
+		src="../../plugins/leaflet1.3/leaflet.markercluster-src.js"></script>
+
+	<!-- bootstrap -->
+	<script type="text/javascript"
+		src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="../../plugins/bootstrap/js/bootstrap-datetimepicker.min.js"
+		charset="UTF-8"></script>
+	<script type="text/javascript"
+		src="../../plugins/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"
+		charset="UTF-8"></script>
+
+	<!--高德地图  -->
+	<script type="text/javascript"
+		src="https://webapi.amap.com/maps?v=1.4.15&key=7a482228b899f6ae5ae22db610222276"></script>
+	<!-- echarts -->
+	<script type="text/javascript"
+		src="../../plugins/echarts3.6.2/echarts.min.js"></script>
+	<script type="text/javascript"
+		src="../../plugins/echarts3.6.2/macarons.js"></script>
+	<script type="text/javascript" src="../../js/remogeo.js"></script>
+	<!-- 自己写js -->
+	<script type="text/javascript" src="js/base.js"></script>
+	<script type="text/javascript" src="js/highcharts.js"></script>
+	<script type="text/javascript" src="../../js/loading.js"></script>
+	<script type="text/javascript" src="../../js/base/serverUtils.js"></script>
+	<script>
+    	document.write('<script src="js/radarchart.js?time=' + new Date().getTime() + '"><\/script>')
+    	document.write('<script src="js/radarMain.js?time=' + new Date().getTime() + '"><\/script>')
+	</script>
+</body>
+</html>
